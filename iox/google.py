@@ -20,13 +20,20 @@ from tempfile import gettempdir
 # Allows data extract from BigQuery database
 class BigQuery:
     """
-    Connects to BigQuery
+    Connect to BigQuery
     """
 
     # Initialize the instance
     def __init__(self, project_id, credentials='credentials.json'):
         """
+        Initialize instance of BigQuery class
 
+        Parameters
+        ----------
+        project_id : str
+            Google project ID
+        credentials : str
+            Path to Google credentials
         """
 
         # Save information
@@ -36,6 +43,10 @@ class BigQuery:
 
     # Connection check
     def _connection_check(self):
+        """
+        Connect if the connection has not already been set up
+        """
+
         if self.client is None:
             self.connect()
 
@@ -250,6 +261,15 @@ def authenticate(endpoint, credentials='credentials.json'):
         raise AttributeError('endpoint must be a string')
     if not isinstance(credentials, str):
         raise AttributeError('credentials must be a string')
+
+    # Check if credentials.json exists
+    if not os.path.isfile(credentials):
+        raise AttributeError("""
+            %s does not exist
+            you can create it at any of:
+                https://cloud.google.com/bigquery/docs/quickstarts/quickstart-client-libraries
+                https://developers.google.com/sheets/api/quickstart/python
+        """ % credentials)
 
     # Name our authentication token and place it in tempdir
     token_name = os.path.join(gettempdir(), 'google_' + md5(endpoint.encode()).hexdigest() + '.pickle')

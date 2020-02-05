@@ -29,6 +29,7 @@ setup(
         'iox'
     ],
     install_requires=[
+        'glovebox',
         'google-api-python-client',
         'google-cloud-bigquery==1.22.0',
         'google_auth',
