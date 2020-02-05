@@ -6,6 +6,7 @@ author: C. Lockhart <chris@lockhartlab.org>
 
 from hashlib import md5
 from glob import iglob
+from glovebox import GloveBox
 from googleapiclient.discovery import build
 from google.cloud import bigquery
 from google_auth_oauthlib.flow import InstalledAppFlow
@@ -272,7 +273,7 @@ def authenticate(endpoint, credentials='credentials.json'):
         """ % credentials)
 
     # Name our authentication token and place it in tempdir
-    token_name = os.path.join(gettempdir(), 'google_' + md5(endpoint.encode()).hexdigest() + '.pickle')
+    token_name = os.path.join(GloveBox('iox-google', persist=True).path, md5(endpoint.encode()).hexdigest() + '.pickle')
 
     # Dummy for authenticated credentials
     _credentials = None
@@ -304,5 +305,4 @@ def authenticate(endpoint, credentials='credentials.json'):
 
 # Clean stored credentials
 def clean_stored_credentials():
-    for file in iglob(os.path.join(gettempdir(), 'google_*.pickle')):
-        os.remove(file)
+    GloveBox('iox-google').delete()
