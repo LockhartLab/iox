@@ -5,7 +5,6 @@ author: C. Lockhart <chris@lockhartlab.org>
 """
 
 from hashlib import md5
-from glob import iglob
 from glovebox import GloveBox
 from googleapiclient.discovery import build
 from google.cloud import bigquery
@@ -15,7 +14,6 @@ import numpy as np
 import os.path
 import pandas as pd
 import pickle
-from tempfile import gettempdir
 
 
 # Allows data extract from BigQuery database
