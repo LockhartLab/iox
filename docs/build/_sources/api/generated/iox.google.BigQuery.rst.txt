@@ -1,0 +1,7 @@
+iox.google.BigQuery
+===================
+
+.. currentmodule:: iox.google
+
+.. autoclass:: BigQuery
+   :members:

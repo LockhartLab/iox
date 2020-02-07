@@ -1,0 +1,395 @@
+
+<!DOCTYPE html>
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta charset="utf-8" />
+    <title>iox.google &#8212; iox 0.0.4 documentation</title>
+    <link rel="stylesheet" href="../../_static/nature.css" type="text/css" />
+    <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+    <script type="text/javascript" id="documentation_options" data-url_root="../../" src="../../_static/documentation_options.js"></script>
+    <script type="text/javascript" src="../../_static/jquery.js"></script>
+    <script type="text/javascript" src="../../_static/underscore.js"></script>
+    <script type="text/javascript" src="../../_static/doctools.js"></script>
+    <script type="text/javascript" src="../../_static/language_data.js"></script>
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" /> 
+  </head><body>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="nav-item nav-item-0"><a href="../../index.html">iox 0.0.4 documentation</a> &#187;</li>
+          <li class="nav-item nav-item-1"><a href="../index.html" accesskey="U">Module code</a> &#187;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <h1>Source code for iox.google</h1><div class="highlight"><pre>
+<span></span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">google.py</span>
+<span class="sd">written in Python3</span>
+<span class="sd">author: C. Lockhart &lt;chris@lockhartlab.org&gt;</span>
+<span class="sd">&quot;&quot;&quot;</span>
+
+<span class="kn">from</span> <span class="nn">hashlib</span> <span class="kn">import</span> <span class="n">md5</span>
+<span class="kn">from</span> <span class="nn">glovebox</span> <span class="kn">import</span> <span class="n">GloveBox</span>
+<span class="kn">from</span> <span class="nn">googleapiclient.discovery</span> <span class="kn">import</span> <span class="n">build</span>
+<span class="kn">from</span> <span class="nn">google.cloud</span> <span class="kn">import</span> <span class="n">bigquery</span>
+<span class="kn">from</span> <span class="nn">google_auth_oauthlib.flow</span> <span class="kn">import</span> <span class="n">InstalledAppFlow</span>
+<span class="kn">from</span> <span class="nn">google.auth.transport.requests</span> <span class="kn">import</span> <span class="n">Request</span>
+<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+<span class="kn">import</span> <span class="nn">os.path</span>
+<span class="kn">import</span> <span class="nn">pandas</span> <span class="k">as</span> <span class="nn">pd</span>
+<span class="kn">import</span> <span class="nn">pickle</span>
+
+
+<span class="c1"># Allows data extract from BigQuery database</span>
+<div class="viewcode-block" id="BigQuery"><a class="viewcode-back" href="../../api/generated/iox.BigQuery.html#iox.BigQuery">[docs]</a><span class="k">class</span> <span class="nc">BigQuery</span><span class="p">:</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Connect to BigQuery</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="c1"># Initialize the instance</span>
+<div class="viewcode-block" id="BigQuery.__init__"><a class="viewcode-back" href="../../api/generated/iox.BigQuery.html#iox.BigQuery.__init__">[docs]</a>    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">project_id</span><span class="p">,</span> <span class="n">credentials</span><span class="o">=</span><span class="s1">&#39;credentials.json&#39;</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Initialize instance of BigQuery class</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        project_id : str</span>
+<span class="sd">            Google project ID</span>
+<span class="sd">        credentials : str</span>
+<span class="sd">            Path to Google credentials</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="c1"># Save information</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">project_id</span> <span class="o">=</span> <span class="n">project_id</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">credentials</span> <span class="o">=</span> <span class="n">credentials</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">client</span> <span class="o">=</span> <span class="kc">None</span></div>
+
+    <span class="c1"># Connection check</span>
+    <span class="k">def</span> <span class="nf">_connection_check</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Connect if the connection has not already been set up</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">client</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">connect</span><span class="p">()</span>
+
+    <span class="c1"># Connect to client</span>
+<div class="viewcode-block" id="BigQuery.connect"><a class="viewcode-back" href="../../api/generated/iox.BigQuery.html#iox.BigQuery.connect">[docs]</a>    <span class="k">def</span> <span class="nf">connect</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Start the client connection with BigQuery using :func:`~iox.authenticate`</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="c1"># Authenticate credentials</span>
+        <span class="n">_credentials</span> <span class="o">=</span> <span class="n">authenticate</span><span class="p">(</span><span class="s1">&#39;https://www.googleapis.com/auth/bigquery&#39;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">credentials</span><span class="p">)</span>
+
+        <span class="c1"># Connect to client and save</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">client</span> <span class="o">=</span> <span class="n">bigquery</span><span class="o">.</span><span class="n">Client</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">project_id</span><span class="p">,</span> <span class="n">_credentials</span><span class="p">)</span></div>
+
+    <span class="c1"># TODO add create_table method</span>
+    <span class="k">def</span> <span class="nf">create_table</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">table</span><span class="p">):</span>
+        <span class="k">pass</span>
+
+    <span class="c1"># Delete table in BigQuery</span>
+<div class="viewcode-block" id="BigQuery.delete_table"><a class="viewcode-back" href="../../api/generated/iox.BigQuery.html#iox.BigQuery.delete_table">[docs]</a>    <span class="k">def</span> <span class="nf">delete_table</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">table</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Delete table in BigQuery</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        table : str</span>
+<span class="sd">            Name of table to be deleted</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="c1"># Check that the connection is active</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_connection_check</span><span class="p">()</span>
+
+        <span class="c1"># Delete the table</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">client</span><span class="o">.</span><span class="n">delete_table</span><span class="p">(</span><span class="n">table</span><span class="p">,</span> <span class="n">not_found_ok</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span></div>
+
+    <span class="c1"># TODO execute SQL code without intention to return</span>
+    <span class="k">def</span> <span class="nf">execute</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">sql</span><span class="p">):</span>
+        <span class="k">pass</span>
+
+    <span class="c1"># Query database with a file</span>
+<div class="viewcode-block" id="BigQuery.fquery"><a class="viewcode-back" href="../../api/generated/iox.BigQuery.html#iox.BigQuery.fquery">[docs]</a>    <span class="k">def</span> <span class="nf">fquery</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">file_name</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Query database with a file.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        -------</span>
+<span class="sd">        file_name : str</span>
+<span class="sd">            Path to file that contains a SQL query.</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        pandas.DataFrame</span>
+<span class="sd">            The results from the query</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="c1"># Open file, read in query, and run it</span>
+        <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">file_name</span><span class="p">,</span> <span class="s1">&#39;r&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">file_stream</span><span class="p">:</span>
+            <span class="n">sql</span> <span class="o">=</span> <span class="n">file_stream</span><span class="o">.</span><span class="n">read</span><span class="p">()</span>
+            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">query</span><span class="p">(</span><span class="n">sql</span><span class="p">)</span></div>
+
+    <span class="c1"># Query database with a string</span>
+<div class="viewcode-block" id="BigQuery.query"><a class="viewcode-back" href="../../api/generated/iox.BigQuery.html#iox.BigQuery.query">[docs]</a>    <span class="k">def</span> <span class="nf">query</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">sql</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Query database with a string.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        sql : str</span>
+<span class="sd">            SQL statements to be run.</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        pd.DataFrame</span>
+<span class="sd">            The results from the query</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="c1"># Check that we are connected to BigQuery</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_connection_check</span><span class="p">()</span>
+
+        <span class="c1"># Run SQL</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">client</span><span class="o">.</span><span class="n">query</span><span class="p">(</span><span class="n">sql</span><span class="p">)</span><span class="o">.</span><span class="n">to_dataframe</span><span class="p">()</span></div></div>
+
+
+<span class="c1"># Class for reading &amp; writing to Google Sheets</span>
+<div class="viewcode-block" id="GoogleSheet"><a class="viewcode-back" href="../../api/generated/iox.GoogleSheet.html#iox.GoogleSheet">[docs]</a><span class="k">class</span> <span class="nc">GoogleSheet</span><span class="p">:</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Read and write to Google sheets.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="c1"># Initialize the class instance</span>
+<div class="viewcode-block" id="GoogleSheet.__init__"><a class="viewcode-back" href="../../api/generated/iox.GoogleSheet.html#iox.GoogleSheet.__init__">[docs]</a>    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">spreadsheet_id</span><span class="p">,</span> <span class="n">credentials</span><span class="o">=</span><span class="s1">&#39;credentials.json&#39;</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">spreadsheet_id</span> <span class="o">=</span> <span class="n">spreadsheet_id</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">credentials</span> <span class="o">=</span> <span class="n">credentials</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">sheet</span> <span class="o">=</span> <span class="kc">None</span></div>
+
+    <span class="c1"># Check if we&#39;re connected</span>
+    <span class="k">def</span> <span class="nf">_connection_check</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">sheet</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">connect</span><span class="p">()</span>
+
+    <span class="c1"># Helper function to read</span>
+    <span class="k">def</span> <span class="nf">_read</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">cell</span><span class="p">,</span> <span class="n">formula</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+        <span class="c1"># Define parameters</span>
+        <span class="n">params</span> <span class="o">=</span> <span class="p">{</span>
+            <span class="s1">&#39;spreadsheetId&#39;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">spreadsheet_id</span><span class="p">,</span>
+            <span class="s1">&#39;range&#39;</span><span class="p">:</span> <span class="n">cell</span><span class="p">,</span>
+        <span class="p">}</span>
+
+        <span class="c1"># Read the sheet as text or formulas?</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">formula</span><span class="p">:</span>
+            <span class="n">params</span><span class="p">[</span><span class="s1">&#39;valueRenderOption&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="s1">&#39;UNFORMATTED_VALUE&#39;</span>
+            <span class="n">params</span><span class="p">[</span><span class="s1">&#39;dateTimeRenderOption&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="s1">&#39;FORMATTED_STRING&#39;</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">params</span><span class="p">[</span><span class="s1">&#39;valueRenderOption&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="s1">&#39;FORMULA&#39;</span>
+
+        <span class="c1"># Read using API</span>
+        <span class="n">result</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">sheet</span><span class="o">.</span><span class="n">values</span><span class="p">()</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="o">**</span><span class="n">params</span><span class="p">)</span><span class="o">.</span><span class="n">execute</span><span class="p">()</span>
+
+        <span class="c1"># Return values</span>
+        <span class="k">return</span> <span class="n">result</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;values&#39;</span><span class="p">,</span> <span class="p">[])</span>
+
+    <span class="c1"># Write</span>
+    <span class="k">def</span> <span class="nf">_write</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">cell</span><span class="p">,</span> <span class="n">values</span><span class="p">,</span> <span class="n">formula</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+        <span class="c1"># Parameters</span>
+        <span class="n">params</span> <span class="o">=</span> <span class="p">{</span>
+            <span class="s1">&#39;spreadsheetId&#39;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">spreadsheet_id</span><span class="p">,</span>
+            <span class="s1">&#39;range&#39;</span><span class="p">:</span> <span class="n">cell</span><span class="p">,</span>
+            <span class="s1">&#39;body&#39;</span><span class="p">:</span> <span class="p">{</span><span class="s1">&#39;values&#39;</span><span class="p">:</span> <span class="n">values</span><span class="p">},</span>
+            <span class="s1">&#39;valueInputOption&#39;</span><span class="p">:</span> <span class="s1">&#39;USER_ENTERED&#39;</span> <span class="k">if</span> <span class="n">formula</span> <span class="k">else</span> <span class="s1">&#39;RAW&#39;</span><span class="p">,</span>
+        <span class="p">}</span>
+
+        <span class="c1"># Execute the write</span>
+        <span class="n">_</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">sheet</span><span class="o">.</span><span class="n">values</span><span class="p">()</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="o">**</span><span class="n">params</span><span class="p">)</span><span class="o">.</span><span class="n">execute</span><span class="p">()</span>
+
+    <span class="c1"># Connect</span>
+    <span class="k">def</span> <span class="nf">connect</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="c1"># Authenticate credentials</span>
+        <span class="n">_credentials</span> <span class="o">=</span> <span class="n">authenticate</span><span class="p">(</span><span class="s1">&#39;https://www.googleapis.com/auth/spreadsheets&#39;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">credentials</span><span class="p">)</span>
+
+        <span class="c1"># Connect to sheet</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">sheet</span> <span class="o">=</span> <span class="n">build</span><span class="p">(</span><span class="s1">&#39;sheets&#39;</span><span class="p">,</span> <span class="s1">&#39;v4&#39;</span><span class="p">,</span> <span class="n">credentials</span><span class="o">=</span><span class="n">_credentials</span><span class="p">)</span><span class="o">.</span><span class="n">spreadsheets</span><span class="p">()</span>
+
+    <span class="k">def</span> <span class="nf">copy</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">cell1</span><span class="p">,</span> <span class="n">cell2</span><span class="p">,</span> <span class="n">formula</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
+        <span class="c1"># Check that we&#39;re connected</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_connection_check</span><span class="p">()</span>
+
+        <span class="c1"># Read</span>
+        <span class="n">values</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_read</span><span class="p">(</span><span class="n">cell1</span><span class="p">,</span> <span class="n">formula</span><span class="o">=</span><span class="n">formula</span><span class="p">)</span>
+
+        <span class="c1"># Write to new range</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_write</span><span class="p">(</span><span class="n">cell2</span><span class="p">,</span> <span class="n">values</span><span class="p">,</span> <span class="n">formula</span><span class="o">=</span><span class="n">formula</span><span class="p">)</span>
+
+    <span class="c1"># Read</span>
+    <span class="k">def</span> <span class="nf">read</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">cell</span><span class="p">,</span> <span class="n">header</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+        <span class="c1"># Read</span>
+        <span class="n">values</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_read</span><span class="p">(</span><span class="n">cell</span><span class="p">,</span> <span class="n">formula</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+
+        <span class="c1"># Convert to DataFrame</span>
+        <span class="n">df</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">(</span><span class="n">values</span><span class="p">)</span>
+
+        <span class="c1"># Fix headers?</span>
+        <span class="k">if</span> <span class="n">header</span><span class="p">:</span>
+            <span class="n">df</span> <span class="o">=</span> <span class="n">df</span><span class="o">.</span><span class="n">rename</span><span class="p">(</span><span class="n">columns</span><span class="o">=</span><span class="n">df</span><span class="o">.</span><span class="n">iloc</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span><span class="o">.</span><span class="n">drop</span><span class="p">(</span><span class="n">df</span><span class="o">.</span><span class="n">index</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
+
+        <span class="c1"># Return</span>
+        <span class="k">return</span> <span class="n">df</span>
+
+    <span class="c1"># Write</span>
+<div class="viewcode-block" id="GoogleSheet.write"><a class="viewcode-back" href="../../api/generated/iox.GoogleSheet.html#iox.GoogleSheet.write">[docs]</a>    <span class="k">def</span> <span class="nf">write</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">cell</span><span class="p">,</span> <span class="n">values</span><span class="p">,</span> <span class="n">index</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">header</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        cell</span>
+<span class="sd">        values : pd.DataFrame or array-like or singular</span>
+<span class="sd">        index</span>
+<span class="sd">        header</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="c1"># Convert DataFrame to correct format</span>
+        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">values</span><span class="p">,</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">):</span>
+            <span class="c1"># Include index if necessary</span>
+            <span class="k">if</span> <span class="n">index</span><span class="p">:</span>
+                <span class="n">values</span> <span class="o">=</span> <span class="n">values</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span><span class="o">.</span><span class="n">reset_index</span><span class="p">()</span>
+
+            <span class="c1"># Include header if necessary</span>
+            <span class="n">header_values</span> <span class="o">=</span> <span class="p">[]</span>
+            <span class="k">if</span> <span class="n">header</span><span class="p">:</span>
+                <span class="n">header_values</span> <span class="o">=</span> <span class="p">[</span><span class="n">values</span><span class="o">.</span><span class="n">columns</span><span class="o">.</span><span class="n">values</span><span class="o">.</span><span class="n">tolist</span><span class="p">()]</span>
+
+            <span class="c1"># Convert into usable format</span>
+            <span class="n">values</span> <span class="o">=</span> <span class="n">header_values</span> <span class="o">+</span> <span class="n">values</span><span class="o">.</span><span class="n">iloc</span><span class="p">[:,</span> <span class="p">:]</span><span class="o">.</span><span class="n">values</span><span class="o">.</span><span class="n">tolist</span><span class="p">()</span>
+
+        <span class="c1"># If list-like, convert to correct format</span>
+        <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">values</span><span class="p">,</span> <span class="p">(</span><span class="nb">list</span><span class="p">,</span> <span class="nb">tuple</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">)):</span>
+            <span class="n">values</span> <span class="o">=</span> <span class="p">[</span><span class="n">values</span><span class="p">]</span>
+
+        <span class="c1"># If singular, convert</span>
+        <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">values</span><span class="p">,</span> <span class="p">(</span><span class="nb">int</span><span class="p">,</span> <span class="nb">bool</span><span class="p">,</span> <span class="nb">str</span><span class="p">,</span> <span class="nb">float</span><span class="p">)):</span>
+            <span class="n">values</span> <span class="o">=</span> <span class="p">[[</span><span class="n">values</span><span class="p">]]</span>
+
+        <span class="c1"># Write</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_write</span><span class="p">(</span><span class="n">cell</span><span class="p">,</span> <span class="n">values</span><span class="p">)</span></div></div>
+
+
+<span class="c1"># Authenticate:</span>
+<div class="viewcode-block" id="authenticate"><a class="viewcode-back" href="../../api/generated/iox.authenticate.html#iox.authenticate">[docs]</a><span class="k">def</span> <span class="nf">authenticate</span><span class="p">(</span><span class="n">endpoint</span><span class="p">,</span> <span class="n">credentials</span><span class="o">=</span><span class="s1">&#39;credentials.json&#39;</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Authenticate Google</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    endpoint : str</span>
+<span class="sd">        Google scope to authenticate</span>
+<span class="sd">    credentials : str</span>
+<span class="sd">        Google credentials</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    google.oauth2.credentials.Credentials</span>
+<span class="sd">        Authenticated credentials</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="c1"># Type check</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">endpoint</span><span class="p">,</span> <span class="nb">str</span><span class="p">):</span>
+        <span class="k">raise</span> <span class="ne">AttributeError</span><span class="p">(</span><span class="s1">&#39;endpoint must be a string&#39;</span><span class="p">)</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">credentials</span><span class="p">,</span> <span class="nb">str</span><span class="p">):</span>
+        <span class="k">raise</span> <span class="ne">AttributeError</span><span class="p">(</span><span class="s1">&#39;credentials must be a string&#39;</span><span class="p">)</span>
+
+    <span class="c1"># Check if credentials.json exists</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">isfile</span><span class="p">(</span><span class="n">credentials</span><span class="p">):</span>
+        <span class="k">raise</span> <span class="ne">AttributeError</span><span class="p">(</span><span class="s2">&quot;&quot;&quot;</span>
+<span class="s2">            </span><span class="si">%s</span><span class="s2"> does not exist</span>
+<span class="s2">            you can create it at any of:</span>
+<span class="s2">                https://cloud.google.com/bigquery/docs/quickstarts/quickstart-client-libraries</span>
+<span class="s2">                https://developers.google.com/sheets/api/quickstart/python</span>
+<span class="s2">        &quot;&quot;&quot;</span> <span class="o">%</span> <span class="n">credentials</span><span class="p">)</span>
+
+    <span class="c1"># Name our authentication token and place it in tempdir</span>
+    <span class="n">token_name</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">GloveBox</span><span class="p">(</span><span class="s1">&#39;iox-google&#39;</span><span class="p">,</span> <span class="n">persist</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span><span class="o">.</span><span class="n">path</span><span class="p">,</span> <span class="n">md5</span><span class="p">(</span><span class="n">endpoint</span><span class="o">.</span><span class="n">encode</span><span class="p">())</span><span class="o">.</span><span class="n">hexdigest</span><span class="p">()</span> <span class="o">+</span> <span class="s1">&#39;.pickle&#39;</span><span class="p">)</span>
+
+    <span class="c1"># Dummy for authenticated credentials</span>
+    <span class="n">_credentials</span> <span class="o">=</span> <span class="kc">None</span>
+
+    <span class="c1"># If the token already exists, read in</span>
+    <span class="k">if</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span><span class="n">token_name</span><span class="p">):</span>
+        <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">token_name</span><span class="p">,</span> <span class="s1">&#39;rb&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">token_stream</span><span class="p">:</span>
+            <span class="n">_credentials</span> <span class="o">=</span> <span class="n">pickle</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="n">token_stream</span><span class="p">)</span>
+
+    <span class="c1"># If there are no valid credentials, generate</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">_credentials</span> <span class="ow">or</span> <span class="ow">not</span> <span class="n">_credentials</span><span class="o">.</span><span class="n">valid</span><span class="p">:</span>
+        <span class="c1"># Simply fresh if possible</span>
+        <span class="k">if</span> <span class="n">_credentials</span> <span class="ow">and</span> <span class="n">_credentials</span><span class="o">.</span><span class="n">expired</span> <span class="ow">and</span> <span class="n">_credentials</span><span class="o">.</span><span class="n">refresh_token</span><span class="p">:</span>
+            <span class="n">_credentials</span><span class="o">.</span><span class="n">refresh</span><span class="p">(</span><span class="n">Request</span><span class="p">())</span>
+
+        <span class="c1"># Otherwise, generate</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="c1"># BUGFIX: #1 (https://github.com/LockhartLab/izzy/issues/1)</span>
+            <span class="n">flow</span> <span class="o">=</span> <span class="n">InstalledAppFlow</span><span class="o">.</span><span class="n">from_client_secrets_file</span><span class="p">(</span><span class="n">credentials</span><span class="p">,</span> <span class="p">[</span><span class="n">endpoint</span><span class="p">])</span>
+            <span class="n">_credentials</span> <span class="o">=</span> <span class="n">flow</span><span class="o">.</span><span class="n">run_local_server</span><span class="p">()</span>
+
+        <span class="c1"># Save the new authenticated credentials</span>
+        <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">token_name</span><span class="p">,</span> <span class="s1">&#39;wb&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">token_stream</span><span class="p">:</span>
+            <span class="n">pickle</span><span class="o">.</span><span class="n">dump</span><span class="p">(</span><span class="n">_credentials</span><span class="p">,</span> <span class="n">token_stream</span><span class="p">)</span>
+
+    <span class="c1"># Return the authenticated credentials</span>
+    <span class="k">return</span> <span class="n">_credentials</span></div>
+
+
+<span class="c1"># Clean stored credentials</span>
+<span class="k">def</span> <span class="nf">clean_stored_credentials</span><span class="p">():</span>
+    <span class="n">GloveBox</span><span class="p">(</span><span class="s1">&#39;iox-google&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">delete</span><span class="p">()</span>
+</pre></div>
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+<div id="searchbox" style="display: none" role="search">
+  <h3 id="searchlabel">Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="../../search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" />
+      <input type="submit" value="Go" />
+    </form>
+    </div>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../genindex.html" title="General Index"
+             >index</a></li>
+        <li class="nav-item nav-item-0"><a href="../../index.html">iox 0.0.4 documentation</a> &#187;</li>
+          <li class="nav-item nav-item-1"><a href="../index.html" >Module code</a> &#187;</li> 
+      </ul>
+    </div>
+    <div class="footer" role="contentinfo">
+        &#169; Copyright 2020, Lockhart Lab.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 2.3.1.
+    </div>
+  </body>
+</html>

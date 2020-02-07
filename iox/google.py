@@ -51,6 +51,10 @@ class BigQuery:
 
     # Connect to client
     def connect(self):
+        """
+        Start the client connection with BigQuery using :func:`~iox.authenticate`
+        """
+
         # Authenticate credentials
         _credentials = authenticate('https://www.googleapis.com/auth/bigquery', self.credentials)
 
@@ -61,9 +65,21 @@ class BigQuery:
     def create_table(self, table):
         pass
 
+    # Delete table in BigQuery
     def delete_table(self, table):
+        """
+        Delete table in BigQuery
+
+        Parameters
+        ----------
+        table : str
+            Name of table to be deleted
+        """
+
+        # Check that the connection is active
         self._connection_check()
 
+        # Delete the table
         self.client.delete_table(table, not_found_ok=True)
 
     # TODO execute SQL code without intention to return
@@ -83,6 +99,7 @@ class BigQuery:
         Returns
         -------
         pandas.DataFrame
+            The results from the query
         """
 
         # Open file, read in query, and run it
@@ -103,6 +120,7 @@ class BigQuery:
         Returns
         -------
         pd.DataFrame
+            The results from the query
         """
 
         # Check that we are connected to BigQuery
