@@ -1,7 +1,0 @@
-iox.google.GoogleSheet
-======================
-
-.. currentmodule:: iox.google
-
-.. autoclass:: GoogleSheet
-   :members:

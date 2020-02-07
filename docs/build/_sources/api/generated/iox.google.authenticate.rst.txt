@@ -1,6 +1,0 @@
-iox.google.authenticate
-=======================
-
-.. currentmodule:: iox.google
-
-.. autofunction:: authenticate
