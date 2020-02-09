@@ -14,6 +14,7 @@ import numpy as np
 import os.path
 import pandas as pd
 import pickle
+from privatize import privatize
 
 
 # Allows data extract from BigQuery database
@@ -21,6 +22,11 @@ class BigQuery:
     """
     Connect to BigQuery
     """
+
+    # Privatize class variables
+    project_id = privatize(dtype='str', immutable=True)
+    credentials = privatize(dtype='str', immutable=True)
+    client = privatize(dtype=(None, bigquery.Client))
 
     # Initialize the instance
     def __init__(self, project_id, credentials='credentials.json'):
@@ -119,7 +125,7 @@ class BigQuery:
 
         Returns
         -------
-        pd.DataFrame
+        pandas.DataFrame
             The results from the query
         """
 

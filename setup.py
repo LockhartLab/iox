@@ -15,15 +15,19 @@ version_dict = dict([element.split(': ') for element in data])
 # Convert the version_data to a string
 version = '.'.join([str(version_dict[key]) for key in ['major', 'minor', 'patch']])
 
+# Read in README.md as the long description
+with open('README.md', 'r') as f:
+    long_description = f.read()
+
 # Setup
 setup(
     name='iox',
     version=version,
     author='C. Lockhart',
     author_email='chris@lockhartlab.org',
-    description='iox',
-    long_description='iox',
-    long_description_content_type='text/x-rst',
+    description='a package for IO connections',
+    long_description=long_description,
+    long_description_content_type='text/markdown',
     url="https://www.lockhartlab.org",
     packages=[
         'iox'
@@ -36,6 +40,7 @@ setup(
         'google_auth_oauthlib',
         'numpy',
         'pandas',
+        'privatize>=0.0.9',
     ],
     include_package_data=True,
     zip_safe=True
