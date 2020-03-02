@@ -4,7 +4,7 @@
 <html xmlns="http://www.w3.org/1999/xhtml">
   <head>
     <meta charset="utf-8" />
-    <title>iox.google &#8212; iox 0.0.13 documentation</title>
+    <title>iox.google &#8212; iox 0.0.14 documentation</title>
     <link rel="stylesheet" href="../../_static/nature.css" type="text/css" />
     <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
     <script type="text/javascript" id="documentation_options" data-url_root="../../" src="../../_static/documentation_options.js"></script>
@@ -21,7 +21,7 @@
         <li class="right" style="margin-right: 10px">
           <a href="../../genindex.html" title="General Index"
              accesskey="I">index</a></li>
-        <li class="nav-item nav-item-0"><a href="../../index.html">iox 0.0.13 documentation</a> &#187;</li>
+        <li class="nav-item nav-item-0"><a href="../../index.html">iox 0.0.14 documentation</a> &#187;</li>
           <li class="nav-item nav-item-1"><a href="../index.html" accesskey="U">Module code</a> &#187;</li> 
       </ul>
     </div>  
@@ -127,13 +127,13 @@
         <span class="k">pass</span>
 
     <span class="c1"># Query database with a file</span>
-<div class="viewcode-block" id="BigQuery.fquery"><a class="viewcode-back" href="../../api/generated/iox.BigQuery.html#iox.BigQuery.fquery">[docs]</a>    <span class="k">def</span> <span class="nf">fquery</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">file_name</span><span class="p">):</span>
+<div class="viewcode-block" id="BigQuery.fquery"><a class="viewcode-back" href="../../api/generated/iox.BigQuery.html#iox.BigQuery.fquery">[docs]</a>    <span class="k">def</span> <span class="nf">fquery</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">filename</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Query database with a file.</span>
 
 <span class="sd">        Parameters</span>
 <span class="sd">        -------</span>
-<span class="sd">        file_name : str</span>
+<span class="sd">        filename : str</span>
 <span class="sd">            Path to file that contains a SQL query.</span>
 
 <span class="sd">        Returns</span>
@@ -143,9 +143,30 @@
 <span class="sd">        &quot;&quot;&quot;</span>
 
         <span class="c1"># Open file, read in query, and run it</span>
-        <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">file_name</span><span class="p">,</span> <span class="s1">&#39;r&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">file_stream</span><span class="p">:</span>
+        <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">filename</span><span class="p">,</span> <span class="s1">&#39;r&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">file_stream</span><span class="p">:</span>
             <span class="n">sql</span> <span class="o">=</span> <span class="n">file_stream</span><span class="o">.</span><span class="n">read</span><span class="p">()</span>
             <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">query</span><span class="p">(</span><span class="n">sql</span><span class="p">)</span></div>
+
+    <span class="c1"># To CSV</span>
+<div class="viewcode-block" id="BigQuery.to_csv"><a class="viewcode-back" href="../../api/generated/iox.BigQuery.html#iox.BigQuery.to_csv">[docs]</a>    <span class="k">def</span> <span class="nf">to_csv</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">sql</span><span class="p">,</span> <span class="n">filename</span><span class="p">,</span> <span class="n">index</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Query the database and then write to CSV</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        sql : str</span>
+<span class="sd">            SQL statements to be run.</span>
+<span class="sd">        filename : str</span>
+<span class="sd">            Name of CSV.</span>
+<span class="sd">        index : bool</span>
+<span class="sd">            Should index be written? (Default: True)</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="c1"># Query the database</span>
+        <span class="n">df</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">query</span><span class="p">(</span><span class="n">sql</span><span class="p">)</span>
+
+        <span class="c1"># Write to CSV</span>
+        <span class="n">df</span><span class="o">.</span><span class="n">to_csv</span><span class="p">(</span><span class="n">filename</span><span class="p">,</span> <span class="n">index</span><span class="o">=</span><span class="n">index</span><span class="p">)</span></div>
 
     <span class="c1"># Query database with a string</span>
 <div class="viewcode-block" id="BigQuery.query"><a class="viewcode-back" href="../../api/generated/iox.BigQuery.html#iox.BigQuery.query">[docs]</a>    <span class="k">def</span> <span class="nf">query</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">sql</span><span class="p">):</span>
@@ -389,7 +410,7 @@
         <li class="right" style="margin-right: 10px">
           <a href="../../genindex.html" title="General Index"
              >index</a></li>
-        <li class="nav-item nav-item-0"><a href="../../index.html">iox 0.0.13 documentation</a> &#187;</li>
+        <li class="nav-item nav-item-0"><a href="../../index.html">iox 0.0.14 documentation</a> &#187;</li>
           <li class="nav-item nav-item-1"><a href="../index.html" >Module code</a> &#187;</li> 
       </ul>
     </div>

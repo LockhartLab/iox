@@ -93,13 +93,13 @@ class BigQuery:
         pass
 
     # Query database with a file
-    def fquery(self, file_name):
+    def fquery(self, filename):
         """
         Query database with a file.
 
         Parameters
         -------
-        file_name : str
+        filename : str
             Path to file that contains a SQL query.
 
         Returns
@@ -109,9 +109,30 @@ class BigQuery:
         """
 
         # Open file, read in query, and run it
-        with open(file_name, 'r') as file_stream:
+        with open(filename, 'r') as file_stream:
             sql = file_stream.read()
             return self.query(sql)
+
+    # To CSV
+    def to_csv(self, sql, filename, index=True):
+        """
+        Query the database and then write to CSV
+
+        Parameters
+        ----------
+        sql : str
+            SQL statements to be run.
+        filename : str
+            Name of CSV.
+        index : bool
+            Should index be written? (Default: True)
+        """
+
+        # Query the database
+        df = self.query(sql)
+
+        # Write to CSV
+        df.to_csv(filename, index=index)
 
     # Query database with a string
     def query(self, sql):
