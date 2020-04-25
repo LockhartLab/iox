@@ -71,14 +71,20 @@ class BigQuery:
     def create_table(self, table):
         pass
 
-    def create_view(self, view, sql):
+    def create_view(self, view, sql, update=True):
         # Check that the connection is active
         self._connection_check()
 
+        # Define the view
         view = bigquery.Table(view)
         view.view_query = sql
-        view = self.client.create_table(view)
-        # view = client.update_table(view, ["view_query"])  # API request
+
+        # Create or update the view
+        # TODO this could be made more fault-tolerant
+        if not update:
+            _ = self.client.create_table(view)
+        else:
+            _ = self.client.update_table(view, ["view_query"])
 
     # Delete table in BigQuery
     def delete_table(self, table):
