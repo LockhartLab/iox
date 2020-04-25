@@ -71,7 +71,7 @@ class BigQuery:
     def create_table(self, table):
         pass
 
-    def create_view(self, view, sql, update=True):
+    def create_view(self, view, sql):
         # Check that the connection is active
         self._connection_check()
 
@@ -79,12 +79,8 @@ class BigQuery:
         view = bigquery.Table(view)
         view.view_query = sql
 
-        # Create or update the view
-        # TODO this could be made more fault-tolerant
-        if not update:
-            _ = self.client.create_table(view)
-        else:
-            _ = self.client.update_table(view, ["view_query"])
+        # Create the view
+        _ = self.client.create_table(view)
 
     # Delete table in BigQuery
     def delete_table(self, table):
@@ -170,6 +166,17 @@ class BigQuery:
 
         # Write to CSV
         df.to_csv(filename, index=index)
+
+    def update_view(self, view, sql):
+        # Check that the connection is active
+        self._connection_check()
+
+        # Define the view
+        view = bigquery.Table(view)
+        view.view_query = sql
+
+        # Update the view
+        _ = self.client.update_table(view, ["view_query"])
 
     # Query database with a string
     def query(self, sql):

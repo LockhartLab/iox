@@ -4,7 +4,7 @@
 <html xmlns="http://www.w3.org/1999/xhtml">
   <head>
     <meta charset="utf-8" />
-    <title>iox.google &#8212; iox 0.0.17 documentation</title>
+    <title>iox.google &#8212; iox 0.0.18 documentation</title>
     <link rel="stylesheet" href="../../_static/nature.css" type="text/css" />
     <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
     <script type="text/javascript" id="documentation_options" data-url_root="../../" src="../../_static/documentation_options.js"></script>
@@ -21,7 +21,7 @@
         <li class="right" style="margin-right: 10px">
           <a href="../../genindex.html" title="General Index"
              accesskey="I">index</a></li>
-        <li class="nav-item nav-item-0"><a href="../../index.html">iox 0.0.17 documentation</a> &#187;</li>
+        <li class="nav-item nav-item-0"><a href="../../index.html">iox 0.0.18 documentation</a> &#187;</li>
           <li class="nav-item nav-item-1"><a href="../index.html" accesskey="U">Module code</a> &#187;</li> 
       </ul>
     </div>  
@@ -105,7 +105,7 @@
     <span class="k">def</span> <span class="nf">create_table</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">table</span><span class="p">):</span>
         <span class="k">pass</span>
 
-    <span class="k">def</span> <span class="nf">create_view</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">view</span><span class="p">,</span> <span class="n">sql</span><span class="p">,</span> <span class="n">update</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">create_view</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">view</span><span class="p">,</span> <span class="n">sql</span><span class="p">):</span>
         <span class="c1"># Check that the connection is active</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_connection_check</span><span class="p">()</span>
 
@@ -113,12 +113,8 @@
         <span class="n">view</span> <span class="o">=</span> <span class="n">bigquery</span><span class="o">.</span><span class="n">Table</span><span class="p">(</span><span class="n">view</span><span class="p">)</span>
         <span class="n">view</span><span class="o">.</span><span class="n">view_query</span> <span class="o">=</span> <span class="n">sql</span>
 
-        <span class="c1"># Create or update the view</span>
-        <span class="c1"># TODO this could be made more fault-tolerant</span>
-        <span class="k">if</span> <span class="ow">not</span> <span class="n">update</span><span class="p">:</span>
-            <span class="n">_</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">client</span><span class="o">.</span><span class="n">create_table</span><span class="p">(</span><span class="n">view</span><span class="p">)</span>
-        <span class="k">else</span><span class="p">:</span>
-            <span class="n">_</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">client</span><span class="o">.</span><span class="n">update_table</span><span class="p">(</span><span class="n">view</span><span class="p">,</span> <span class="p">[</span><span class="s2">&quot;view_query&quot;</span><span class="p">])</span>
+        <span class="c1"># Create the view</span>
+        <span class="n">_</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">client</span><span class="o">.</span><span class="n">create_table</span><span class="p">(</span><span class="n">view</span><span class="p">)</span>
 
     <span class="c1"># Delete table in BigQuery</span>
 <div class="viewcode-block" id="BigQuery.delete_table"><a class="viewcode-back" href="../../api/generated/iox.BigQuery.html#iox.BigQuery.delete_table">[docs]</a>    <span class="k">def</span> <span class="nf">delete_table</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">table</span><span class="p">):</span>
@@ -204,6 +200,17 @@
 
         <span class="c1"># Write to CSV</span>
         <span class="n">df</span><span class="o">.</span><span class="n">to_csv</span><span class="p">(</span><span class="n">filename</span><span class="p">,</span> <span class="n">index</span><span class="o">=</span><span class="n">index</span><span class="p">)</span></div>
+
+    <span class="k">def</span> <span class="nf">update_view</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">view</span><span class="p">,</span> <span class="n">sql</span><span class="p">):</span>
+        <span class="c1"># Check that the connection is active</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_connection_check</span><span class="p">()</span>
+
+        <span class="c1"># Define the view</span>
+        <span class="n">view</span> <span class="o">=</span> <span class="n">bigquery</span><span class="o">.</span><span class="n">Table</span><span class="p">(</span><span class="n">view</span><span class="p">)</span>
+        <span class="n">view</span><span class="o">.</span><span class="n">view_query</span> <span class="o">=</span> <span class="n">sql</span>
+
+        <span class="c1"># Update the view</span>
+        <span class="n">_</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">client</span><span class="o">.</span><span class="n">update_table</span><span class="p">(</span><span class="n">view</span><span class="p">,</span> <span class="p">[</span><span class="s2">&quot;view_query&quot;</span><span class="p">])</span>
 
     <span class="c1"># Query database with a string</span>
 <div class="viewcode-block" id="BigQuery.query"><a class="viewcode-back" href="../../api/generated/iox.BigQuery.html#iox.BigQuery.query">[docs]</a>    <span class="k">def</span> <span class="nf">query</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">sql</span><span class="p">):</span>
@@ -466,7 +473,7 @@
         <li class="right" style="margin-right: 10px">
           <a href="../../genindex.html" title="General Index"
              >index</a></li>
-        <li class="nav-item nav-item-0"><a href="../../index.html">iox 0.0.17 documentation</a> &#187;</li>
+        <li class="nav-item nav-item-0"><a href="../../index.html">iox 0.0.18 documentation</a> &#187;</li>
           <li class="nav-item nav-item-1"><a href="../index.html" >Module code</a> &#187;</li> 
       </ul>
     </div>
