@@ -4,7 +4,7 @@
 <html xmlns="http://www.w3.org/1999/xhtml">
   <head>
     <meta charset="utf-8" />
-    <title>iox.google &#8212; iox 0.0.14 documentation</title>
+    <title>iox.google &#8212; iox 0.0.15 documentation</title>
     <link rel="stylesheet" href="../../_static/nature.css" type="text/css" />
     <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
     <script type="text/javascript" id="documentation_options" data-url_root="../../" src="../../_static/documentation_options.js"></script>
@@ -21,7 +21,7 @@
         <li class="right" style="margin-right: 10px">
           <a href="../../genindex.html" title="General Index"
              accesskey="I">index</a></li>
-        <li class="nav-item nav-item-0"><a href="../../index.html">iox 0.0.14 documentation</a> &#187;</li>
+        <li class="nav-item nav-item-0"><a href="../../index.html">iox 0.0.15 documentation</a> &#187;</li>
           <li class="nav-item nav-item-1"><a href="../index.html" accesskey="U">Module code</a> &#187;</li> 
       </ul>
     </div>  
@@ -105,6 +105,12 @@
     <span class="k">def</span> <span class="nf">create_table</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">table</span><span class="p">):</span>
         <span class="k">pass</span>
 
+    <span class="k">def</span> <span class="nf">create_view</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">view</span><span class="p">,</span> <span class="n">sql</span><span class="p">):</span>
+        <span class="n">view</span> <span class="o">=</span> <span class="n">bigquery</span><span class="o">.</span><span class="n">Table</span><span class="p">(</span><span class="n">view</span><span class="p">)</span>
+        <span class="n">view</span><span class="o">.</span><span class="n">view_query</span> <span class="o">=</span> <span class="n">sql</span>
+        <span class="n">view</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">client</span><span class="o">.</span><span class="n">create_table</span><span class="p">(</span><span class="n">view</span><span class="p">)</span>
+        <span class="c1"># view = client.update_table(view, [&quot;view_query&quot;])  # API request</span>
+
     <span class="c1"># Delete table in BigQuery</span>
 <div class="viewcode-block" id="BigQuery.delete_table"><a class="viewcode-back" href="../../api/generated/iox.BigQuery.html#iox.BigQuery.delete_table">[docs]</a>    <span class="k">def</span> <span class="nf">delete_table</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">table</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
@@ -146,6 +152,28 @@
         <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">filename</span><span class="p">,</span> <span class="s1">&#39;r&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">file_stream</span><span class="p">:</span>
             <span class="n">sql</span> <span class="o">=</span> <span class="n">file_stream</span><span class="o">.</span><span class="n">read</span><span class="p">()</span>
             <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">query</span><span class="p">(</span><span class="n">sql</span><span class="p">)</span></div>
+
+    <span class="c1"># Get view query</span>
+<div class="viewcode-block" id="BigQuery.get_view"><a class="viewcode-back" href="../../api/generated/iox.BigQuery.html#iox.BigQuery.get_view">[docs]</a>    <span class="k">def</span> <span class="nf">get_view</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">view</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Get the query in BigQuery view</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        view : str</span>
+<span class="sd">            Reference to view</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        str</span>
+<span class="sd">            View query</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="c1"># Check that the connection is active</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_connection_check</span><span class="p">()</span>
+
+        <span class="c1"># Return the view as a string</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">client</span><span class="o">.</span><span class="n">get_table</span><span class="p">(</span><span class="n">view</span><span class="p">)</span><span class="o">.</span><span class="n">view_query</span></div>
 
     <span class="c1"># To CSV</span>
 <div class="viewcode-block" id="BigQuery.to_csv"><a class="viewcode-back" href="../../api/generated/iox.BigQuery.html#iox.BigQuery.to_csv">[docs]</a>    <span class="k">def</span> <span class="nf">to_csv</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">sql</span><span class="p">,</span> <span class="n">filename</span><span class="p">,</span> <span class="n">index</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
@@ -203,6 +231,18 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">credentials</span> <span class="o">=</span> <span class="n">credentials</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">sheet</span> <span class="o">=</span> <span class="kc">None</span></div>
 
+    <span class="c1"># Clear</span>
+    <span class="k">def</span> <span class="nf">_clear</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">cell</span><span class="p">):</span>
+        <span class="c1"># Define parameters</span>
+        <span class="n">params</span> <span class="o">=</span> <span class="p">{</span>
+            <span class="s1">&#39;spreadsheetId&#39;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">spreadsheet_id</span><span class="p">,</span>
+            <span class="s1">&#39;range&#39;</span><span class="p">:</span> <span class="n">cell</span><span class="p">,</span>
+            <span class="s1">&#39;body&#39;</span><span class="p">:</span> <span class="p">{}</span>
+        <span class="p">}</span>
+
+        <span class="c1"># Clear cells</span>
+        <span class="n">_</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">sheet</span><span class="o">.</span><span class="n">values</span><span class="p">()</span><span class="o">.</span><span class="n">clear</span><span class="p">(</span><span class="o">**</span><span class="n">params</span><span class="p">)</span><span class="o">.</span><span class="n">execute</span><span class="p">()</span>
+
     <span class="c1"># Check if we&#39;re connected</span>
     <span class="k">def</span> <span class="nf">_connection_check</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">sheet</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
@@ -249,6 +289,13 @@
 
         <span class="c1"># Connect to sheet</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">sheet</span> <span class="o">=</span> <span class="n">build</span><span class="p">(</span><span class="s1">&#39;sheets&#39;</span><span class="p">,</span> <span class="s1">&#39;v4&#39;</span><span class="p">,</span> <span class="n">credentials</span><span class="o">=</span><span class="n">_credentials</span><span class="p">)</span><span class="o">.</span><span class="n">spreadsheets</span><span class="p">()</span>
+
+    <span class="k">def</span> <span class="nf">clear</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">cell</span><span class="p">):</span>
+        <span class="c1"># Check that we&#39;re connected</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_connection_check</span><span class="p">()</span>
+
+        <span class="c1"># Clear</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_clear</span><span class="p">(</span><span class="n">cell</span><span class="p">)</span>
 
     <span class="k">def</span> <span class="nf">copy</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">cell1</span><span class="p">,</span> <span class="n">cell2</span><span class="p">,</span> <span class="n">formula</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
         <span class="c1"># Check that we&#39;re connected</span>
@@ -410,7 +457,7 @@
         <li class="right" style="margin-right: 10px">
           <a href="../../genindex.html" title="General Index"
              >index</a></li>
-        <li class="nav-item nav-item-0"><a href="../../index.html">iox 0.0.14 documentation</a> &#187;</li>
+        <li class="nav-item nav-item-0"><a href="../../index.html">iox 0.0.15 documentation</a> &#187;</li>
           <li class="nav-item nav-item-1"><a href="../index.html" >Module code</a> &#187;</li> 
       </ul>
     </div>

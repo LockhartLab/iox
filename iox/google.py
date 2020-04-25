@@ -71,6 +71,12 @@ class BigQuery:
     def create_table(self, table):
         pass
 
+    def create_view(self, view, sql):
+        view = bigquery.Table(view)
+        view.view_query = sql
+        view = self.client.create_table(view)
+        # view = client.update_table(view, ["view_query"])  # API request
+
     # Delete table in BigQuery
     def delete_table(self, table):
         """
@@ -112,6 +118,28 @@ class BigQuery:
         with open(filename, 'r') as file_stream:
             sql = file_stream.read()
             return self.query(sql)
+
+    # Get view query
+    def get_view(self, view):
+        """
+        Get the query in BigQuery view
+
+        Parameters
+        ----------
+        view : str
+            Reference to view
+
+        Returns
+        -------
+        str
+            View query
+        """
+
+        # Check that the connection is active
+        self._connection_check()
+
+        # Return the view as a string
+        return self.client.get_table(view).view_query
 
     # To CSV
     def to_csv(self, sql, filename, index=True):
@@ -169,6 +197,18 @@ class GoogleSheet:
         self.credentials = credentials
         self.sheet = None
 
+    # Clear
+    def _clear(self, cell):
+        # Define parameters
+        params = {
+            'spreadsheetId': self.spreadsheet_id,
+            'range': cell,
+            'body': {}
+        }
+
+        # Clear cells
+        _ = self.sheet.values().clear(**params).execute()
+
     # Check if we're connected
     def _connection_check(self):
         if self.sheet is None:
@@ -215,6 +255,13 @@ class GoogleSheet:
 
         # Connect to sheet
         self.sheet = build('sheets', 'v4', credentials=_credentials).spreadsheets()
+
+    def clear(self, cell):
+        # Check that we're connected
+        self._connection_check()
+
+        # Clear
+        self._clear(cell)
 
     def copy(self, cell1, cell2, formula=True):
         # Check that we're connected
