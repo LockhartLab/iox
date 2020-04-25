@@ -72,6 +72,9 @@ class BigQuery:
         pass
 
     def create_view(self, view, sql):
+        # Check that the connection is active
+        self._connection_check()
+
         view = bigquery.Table(view)
         view.view_query = sql
         view = self.client.create_table(view)
