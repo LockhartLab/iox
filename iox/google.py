@@ -26,9 +26,9 @@ class BigQuery:
     """
 
     # Privatize class variables
-    project_id = privatize(dtype='str', immutable=True)
-    credentials = privatize(dtype='str', immutable=True)
-    client = privatize(dtype=(None, bigquery.Client))
+    # project_id = privatize(dtype='str', immutable=True)
+    # credentials = privatize(dtype='str', immutable=True)
+    # client = privatize(dtype=(None, bigquery.Client))
 
     # Initialize the instance
     # TODO add ability to authenticate via API key
