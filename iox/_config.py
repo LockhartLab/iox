@@ -16,10 +16,10 @@ if os.path.exists(config_file):
     parser.read(config_file)
 
     # Get credentials
-    this.google['credentials'] = parser.get('google', 'credentials')
+    this.google['credentials'] = parser.get('google', 'credentials', fallback='credentials.json')
 
     # Get project ID
-    this.google['project_id'] = parser.get('google', 'project-id')
+    this.google['project_id'] = parser.get('google', 'project-id', fallback=None)
 
 
 

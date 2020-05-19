@@ -45,7 +45,7 @@ class BigQuery:
         """
 
         # Project ID
-        if project_id is None and 'project-id' in config:
+        if project_id is None:
             project_id = config['project-id']
         else:
             raise AttributeError('must supply project ID')
@@ -441,11 +441,9 @@ def authenticate(endpoint, credentials=None):
         Authenticated credentials
     """
 
-    # Get credentials from configuration. Otherwise, assume in current directory.
-    if credentials is None and 'credentials' in config:
+    # Get credentials from configuration if not set
+    if credentials is None:
         credentials = config['credentials']
-    else:
-        credentials = 'credentials.json'
 
     # Type check
     if not isinstance(endpoint, str):
