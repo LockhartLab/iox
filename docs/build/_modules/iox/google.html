@@ -4,7 +4,7 @@
 <html xmlns="http://www.w3.org/1999/xhtml">
   <head>
     <meta charset="utf-8" />
-    <title>iox.google &#8212; iox 0.0.18 documentation</title>
+    <title>iox.google &#8212; iox 0.0.19 documentation</title>
     <link rel="stylesheet" href="../../_static/nature.css" type="text/css" />
     <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
     <script type="text/javascript" id="documentation_options" data-url_root="../../" src="../../_static/documentation_options.js"></script>
@@ -21,7 +21,7 @@
         <li class="right" style="margin-right: 10px">
           <a href="../../genindex.html" title="General Index"
              accesskey="I">index</a></li>
-        <li class="nav-item nav-item-0"><a href="../../index.html">iox 0.0.18 documentation</a> &#187;</li>
+        <li class="nav-item nav-item-0"><a href="../../index.html">iox 0.0.19 documentation</a> &#187;</li>
           <li class="nav-item nav-item-1"><a href="../index.html" accesskey="U">Module code</a> &#187;</li> 
       </ul>
     </div>  
@@ -245,10 +245,19 @@
 <div class="viewcode-block" id="GoogleSheet.__init__"><a class="viewcode-back" href="../../api/generated/iox.GoogleSheet.html#iox.GoogleSheet.__init__">[docs]</a>    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">spreadsheet_id</span><span class="p">,</span> <span class="n">credentials</span><span class="o">=</span><span class="s1">&#39;credentials.json&#39;</span><span class="p">):</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">spreadsheet_id</span> <span class="o">=</span> <span class="n">spreadsheet_id</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">credentials</span> <span class="o">=</span> <span class="n">credentials</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">sheet</span> <span class="o">=</span> <span class="kc">None</span></div>
+        <span class="bp">self</span><span class="o">.</span><span class="n">spreadsheet</span> <span class="o">=</span> <span class="kc">None</span></div>
 
     <span class="c1"># Clear</span>
     <span class="k">def</span> <span class="nf">_clear</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">cell</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Clear cell range.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        cell : str</span>
+<span class="sd">            Cell range to clear.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
         <span class="c1"># Define parameters</span>
         <span class="n">params</span> <span class="o">=</span> <span class="p">{</span>
             <span class="s1">&#39;spreadsheetId&#39;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">spreadsheet_id</span><span class="p">,</span>
@@ -257,12 +266,24 @@
         <span class="p">}</span>
 
         <span class="c1"># Clear cells</span>
-        <span class="n">_</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">sheet</span><span class="o">.</span><span class="n">values</span><span class="p">()</span><span class="o">.</span><span class="n">clear</span><span class="p">(</span><span class="o">**</span><span class="n">params</span><span class="p">)</span><span class="o">.</span><span class="n">execute</span><span class="p">()</span>
+        <span class="n">_</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">spreadsheet</span><span class="o">.</span><span class="n">values</span><span class="p">()</span><span class="o">.</span><span class="n">clear</span><span class="p">(</span><span class="o">**</span><span class="n">params</span><span class="p">)</span><span class="o">.</span><span class="n">execute</span><span class="p">()</span>
 
     <span class="c1"># Check if we&#39;re connected</span>
     <span class="k">def</span> <span class="nf">_connection_check</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">sheet</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Connect to Google API services if not connected.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">spreadsheet</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">connect</span><span class="p">()</span>
+
+    <span class="c1"># Retrieve the ID of a sheet in the spreadsheet</span>
+    <span class="k">def</span> <span class="nf">_get_sheet_id</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">sheet</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+        <span class="n">sheets</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">spreadsheet</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">spreadsheetId</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">spreadsheet_id</span><span class="p">)</span><span class="o">.</span><span class="n">execute</span><span class="p">()[</span><span class="s1">&#39;sheets&#39;</span><span class="p">]</span>
+        <span class="n">properties</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">(</span><span class="n">sheets</span><span class="p">)[</span><span class="s1">&#39;properties&#39;</span><span class="p">]</span>
+        <span class="n">_sheet_ids</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">(</span><span class="n">properties</span><span class="o">.</span><span class="n">tolist</span><span class="p">())</span>
+        <span class="n">sheet_ids</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">(</span><span class="nb">zip</span><span class="p">(</span><span class="n">_sheet_ids</span><span class="p">[</span><span class="s1">&#39;title&#39;</span><span class="p">],</span> <span class="n">_sheet_ids</span><span class="p">[</span><span class="s1">&#39;sheetId&#39;</span><span class="p">]))</span>
+        <span class="k">return</span> <span class="n">sheet_ids</span> <span class="k">if</span> <span class="n">sheet</span> <span class="ow">is</span> <span class="kc">None</span> <span class="k">else</span> <span class="n">sheet_ids</span><span class="p">[</span><span class="n">sheet</span><span class="p">]</span>
 
     <span class="c1"># Helper function to read</span>
     <span class="k">def</span> <span class="nf">_read</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">cell</span><span class="p">,</span> <span class="n">formula</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
@@ -280,7 +301,7 @@
             <span class="n">params</span><span class="p">[</span><span class="s1">&#39;valueRenderOption&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="s1">&#39;FORMULA&#39;</span>
 
         <span class="c1"># Read using API</span>
-        <span class="n">result</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">sheet</span><span class="o">.</span><span class="n">values</span><span class="p">()</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="o">**</span><span class="n">params</span><span class="p">)</span><span class="o">.</span><span class="n">execute</span><span class="p">()</span>
+        <span class="n">result</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">spreadsheet</span><span class="o">.</span><span class="n">values</span><span class="p">()</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="o">**</span><span class="n">params</span><span class="p">)</span><span class="o">.</span><span class="n">execute</span><span class="p">()</span>
 
         <span class="c1"># Return values</span>
         <span class="k">return</span> <span class="n">result</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;values&#39;</span><span class="p">,</span> <span class="p">[])</span>
@@ -296,7 +317,11 @@
         <span class="p">}</span>
 
         <span class="c1"># Execute the write</span>
-        <span class="n">_</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">sheet</span><span class="o">.</span><span class="n">values</span><span class="p">()</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="o">**</span><span class="n">params</span><span class="p">)</span><span class="o">.</span><span class="n">execute</span><span class="p">()</span>
+        <span class="n">_</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">spreadsheet</span><span class="o">.</span><span class="n">values</span><span class="p">()</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="o">**</span><span class="n">params</span><span class="p">)</span><span class="o">.</span><span class="n">execute</span><span class="p">()</span>
+
+    <span class="c1"># Add sheet</span>
+    <span class="k">def</span> <span class="nf">add_sheet</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">pass</span>
 
     <span class="c1"># Connect</span>
     <span class="k">def</span> <span class="nf">connect</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
@@ -304,7 +329,49 @@
         <span class="n">_credentials</span> <span class="o">=</span> <span class="n">authenticate</span><span class="p">(</span><span class="s1">&#39;https://www.googleapis.com/auth/spreadsheets&#39;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">credentials</span><span class="p">)</span>
 
         <span class="c1"># Connect to sheet</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">sheet</span> <span class="o">=</span> <span class="n">build</span><span class="p">(</span><span class="s1">&#39;sheets&#39;</span><span class="p">,</span> <span class="s1">&#39;v4&#39;</span><span class="p">,</span> <span class="n">credentials</span><span class="o">=</span><span class="n">_credentials</span><span class="p">)</span><span class="o">.</span><span class="n">spreadsheets</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">spreadsheet</span> <span class="o">=</span> <span class="n">build</span><span class="p">(</span><span class="s1">&#39;sheets&#39;</span><span class="p">,</span> <span class="s1">&#39;v4&#39;</span><span class="p">,</span> <span class="n">credentials</span><span class="o">=</span><span class="n">_credentials</span><span class="p">)</span><span class="o">.</span><span class="n">spreadsheets</span><span class="p">()</span>
+
+    <span class="k">def</span> <span class="nf">copy_sheet</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">from_sheet</span><span class="p">,</span> <span class="n">to_sheet</span><span class="p">):</span>
+        <span class="n">sheet_ids</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get_sheet_id</span><span class="p">()</span>
+        <span class="n">from_sheet_id</span> <span class="o">=</span> <span class="n">sheet_ids</span><span class="p">[</span><span class="n">from_sheet</span><span class="p">]</span>
+        <span class="k">if</span> <span class="n">to_sheet</span> <span class="ow">in</span> <span class="n">sheet_ids</span><span class="p">:</span>
+            <span class="n">to_sheet_id</span> <span class="o">=</span> <span class="n">sheet_ids</span><span class="p">[</span><span class="n">to_sheet</span><span class="p">]</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">pass</span>
+
+<div class="viewcode-block" id="GoogleSheet.delete_sheet"><a class="viewcode-back" href="../../api/generated/iox.GoogleSheet.html#iox.GoogleSheet.delete_sheet">[docs]</a>    <span class="k">def</span> <span class="nf">delete_sheet</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">sheet</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Delete sheet by name from Google spreadsheet.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        sheet : str</span>
+<span class="sd">            Name of Google sheet.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">delete_sheet_id</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_get_sheet_id</span><span class="p">(</span><span class="n">sheet</span><span class="p">))</span></div>
+
+<div class="viewcode-block" id="GoogleSheet.delete_sheet_id"><a class="viewcode-back" href="../../api/generated/iox.GoogleSheet.html#iox.GoogleSheet.delete_sheet_id">[docs]</a>    <span class="k">def</span> <span class="nf">delete_sheet_id</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">sheet_id</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Delete sheet by ID from Google spreadsheet.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        sheet_id : int</span>
+<span class="sd">            ID of Google sheet, i.e., https://docs.google.com/spreadsheets/d/[spreadsheet_id]/edit#gid=[sheet_id]</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="n">parameters</span> <span class="o">=</span> <span class="p">{</span>
+            <span class="s1">&#39;requests&#39;</span><span class="p">:</span> <span class="p">[</span>
+                <span class="p">{</span>
+                    <span class="s1">&#39;deleteSheet&#39;</span><span class="p">:</span> <span class="p">{</span>
+                        <span class="s1">&#39;sheetId&#39;</span><span class="p">:</span> <span class="n">sheet_id</span>
+                    <span class="p">}</span>
+                <span class="p">}</span>
+            <span class="p">]</span>
+        <span class="p">}</span>
+
+        <span class="n">_</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">spreadsheet</span><span class="o">.</span><span class="n">batchUpdate</span><span class="p">(</span><span class="n">spreadsheetId</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">spreadsheet_id</span><span class="p">,</span> <span class="n">body</span><span class="o">=</span><span class="n">parameters</span><span class="p">)</span><span class="o">.</span><span class="n">execute</span><span class="p">()</span></div>
 
     <span class="k">def</span> <span class="nf">clear</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">cell</span><span class="p">):</span>
         <span class="c1"># Check that we&#39;re connected</span>
@@ -339,20 +406,22 @@
         <span class="k">return</span> <span class="n">df</span>
 
     <span class="c1"># Write</span>
-<div class="viewcode-block" id="GoogleSheet.write"><a class="viewcode-back" href="../../api/generated/iox.GoogleSheet.html#iox.GoogleSheet.write">[docs]</a>    <span class="k">def</span> <span class="nf">write</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">cell</span><span class="p">,</span> <span class="n">values</span><span class="p">,</span> <span class="n">index</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">header</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
+<div class="viewcode-block" id="GoogleSheet.write"><a class="viewcode-back" href="../../api/generated/iox.GoogleSheet.html#iox.GoogleSheet.write">[docs]</a>    <span class="k">def</span> <span class="nf">write</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">cell</span><span class="p">,</span> <span class="n">values</span><span class="p">,</span> <span class="n">index</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">header</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">formula</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
 
 <span class="sd">        Parameters</span>
 <span class="sd">        ----------</span>
-<span class="sd">        cell</span>
+<span class="sd">        cell : str</span>
 <span class="sd">        values : pd.DataFrame or array-like or singular</span>
 <span class="sd">        index</span>
 <span class="sd">        header</span>
+<span class="sd">        formula : bool</span>
 
 <span class="sd">        Returns</span>
 <span class="sd">        -------</span>
 
 <span class="sd">        &quot;&quot;&quot;</span>
+
         <span class="c1"># Convert DataFrame to correct format</span>
         <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">values</span><span class="p">,</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">):</span>
             <span class="c1"># Include index if necessary</span>
@@ -376,7 +445,7 @@
             <span class="n">values</span> <span class="o">=</span> <span class="p">[[</span><span class="n">values</span><span class="p">]]</span>
 
         <span class="c1"># Write</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_write</span><span class="p">(</span><span class="n">cell</span><span class="p">,</span> <span class="n">values</span><span class="p">)</span></div></div>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_write</span><span class="p">(</span><span class="n">cell</span><span class="p">,</span> <span class="n">values</span><span class="p">,</span> <span class="n">formula</span><span class="o">=</span><span class="n">formula</span><span class="p">)</span></div></div>
 
 
 <span class="c1"># Authenticate:</span>
@@ -473,7 +542,7 @@
         <li class="right" style="margin-right: 10px">
           <a href="../../genindex.html" title="General Index"
              >index</a></li>
-        <li class="nav-item nav-item-0"><a href="../../index.html">iox 0.0.18 documentation</a> &#187;</li>
+        <li class="nav-item nav-item-0"><a href="../../index.html">iox 0.0.19 documentation</a> &#187;</li>
           <li class="nav-item nav-item-1"><a href="../index.html" >Module code</a> &#187;</li> 
       </ul>
     </div>

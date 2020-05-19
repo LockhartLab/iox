@@ -211,10 +211,19 @@ class GoogleSheet:
     def __init__(self, spreadsheet_id, credentials='credentials.json'):
         self.spreadsheet_id = spreadsheet_id
         self.credentials = credentials
-        self.sheet = None
+        self.spreadsheet = None
 
     # Clear
     def _clear(self, cell):
+        """
+        Clear cell range.
+
+        Parameters
+        ----------
+        cell : str
+            Cell range to clear.
+        """
+
         # Define parameters
         params = {
             'spreadsheetId': self.spreadsheet_id,
@@ -223,12 +232,24 @@ class GoogleSheet:
         }
 
         # Clear cells
-        _ = self.sheet.values().clear(**params).execute()
+        _ = self.spreadsheet.values().clear(**params).execute()
 
     # Check if we're connected
     def _connection_check(self):
-        if self.sheet is None:
+        """
+        Connect to Google API services if not connected.
+        """
+
+        if self.spreadsheet is None:
             self.connect()
+
+    # Retrieve the ID of a sheet in the spreadsheet
+    def _get_sheet_id(self, sheet=None):
+        sheets = self.spreadsheet.get(spreadsheetId=self.spreadsheet_id).execute()['sheets']
+        properties = pd.DataFrame(sheets)['properties']
+        _sheet_ids = pd.DataFrame(properties.tolist())
+        sheet_ids = dict(zip(_sheet_ids['title'], _sheet_ids['sheetId']))
+        return sheet_ids if sheet is None else sheet_ids[sheet]
 
     # Helper function to read
     def _read(self, cell, formula=False):
@@ -246,7 +267,7 @@ class GoogleSheet:
             params['valueRenderOption'] = 'FORMULA'
 
         # Read using API
-        result = self.sheet.values().get(**params).execute()
+        result = self.spreadsheet.values().get(**params).execute()
 
         # Return values
         return result.get('values', [])
@@ -262,7 +283,11 @@ class GoogleSheet:
         }
 
         # Execute the write
-        _ = self.sheet.values().update(**params).execute()
+        _ = self.spreadsheet.values().update(**params).execute()
+
+    # Add sheet
+    def add_sheet(self):
+        pass
 
     # Connect
     def connect(self):
@@ -270,7 +295,49 @@ class GoogleSheet:
         _credentials = authenticate('https://www.googleapis.com/auth/spreadsheets', self.credentials)
 
         # Connect to sheet
-        self.sheet = build('sheets', 'v4', credentials=_credentials).spreadsheets()
+        self.spreadsheet = build('sheets', 'v4', credentials=_credentials).spreadsheets()
+
+    def copy_sheet(self, from_sheet, to_sheet):
+        sheet_ids = self._get_sheet_id()
+        from_sheet_id = sheet_ids[from_sheet]
+        if to_sheet in sheet_ids:
+            to_sheet_id = sheet_ids[to_sheet]
+        else:
+            pass
+
+    def delete_sheet(self, sheet):
+        """
+        Delete sheet by name from Google spreadsheet.
+
+        Parameters
+        ----------
+        sheet : str
+            Name of Google sheet.
+        """
+
+        self.delete_sheet_id(self._get_sheet_id(sheet))
+
+    def delete_sheet_id(self, sheet_id):
+        """
+        Delete sheet by ID from Google spreadsheet.
+
+        Parameters
+        ----------
+        sheet_id : int
+            ID of Google sheet, i.e., https://docs.google.com/spreadsheets/d/[spreadsheet_id]/edit#gid=[sheet_id]
+        """
+
+        parameters = {
+            'requests': [
+                {
+                    'deleteSheet': {
+                        'sheetId': sheet_id
+                    }
+                }
+            ]
+        }
+
+        _ = self.spreadsheet.batchUpdate(spreadsheetId=self.spreadsheet_id, body=parameters).execute()
 
     def clear(self, cell):
         # Check that we're connected
@@ -305,20 +372,22 @@ class GoogleSheet:
         return df
 
     # Write
-    def write(self, cell, values, index=False, header=True):
+    def write(self, cell, values, index=False, header=True, formula=False):
         """
 
         Parameters
         ----------
-        cell
+        cell : str
         values : pd.DataFrame or array-like or singular
         index
         header
+        formula : bool
 
         Returns
         -------
 
         """
+
         # Convert DataFrame to correct format
         if isinstance(values, pd.DataFrame):
             # Include index if necessary
@@ -342,7 +411,7 @@ class GoogleSheet:
             values = [[values]]
 
         # Write
-        self._write(cell, values)
+        self._write(cell, values, formula=formula)
 
 
 # Authenticate:

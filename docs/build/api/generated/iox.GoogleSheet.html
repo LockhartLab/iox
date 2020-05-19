@@ -4,7 +4,7 @@
 <html xmlns="http://www.w3.org/1999/xhtml">
   <head>
     <meta charset="utf-8" />
-    <title>iox.GoogleSheet &#8212; iox 0.0.18 documentation</title>
+    <title>iox.GoogleSheet &#8212; iox 0.0.19 documentation</title>
     <link rel="stylesheet" href="../../_static/nature.css" type="text/css" />
     <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
     <script type="text/javascript" id="documentation_options" data-url_root="../../" src="../../_static/documentation_options.js"></script>
@@ -29,7 +29,7 @@
         <li class="right" >
           <a href="iox.BigQuery.html" title="iox.BigQuery"
              accesskey="P">previous</a> |</li>
-        <li class="nav-item nav-item-0"><a href="../../index.html">iox 0.0.18 documentation</a> &#187;</li>
+        <li class="nav-item nav-item-0"><a href="../../index.html">iox 0.0.19 documentation</a> &#187;</li>
           <li class="nav-item nav-item-1"><a href="../../api.html" >API Reference</a> &#187;</li>
           <li class="nav-item nav-item-2"><a href="../google.html" accesskey="U">iox.google</a> &#187;</li> 
       </ul>
@@ -54,15 +54,38 @@
 </dd></dl>
 
 <dl class="method">
+<dt id="iox.GoogleSheet.delete_sheet">
+<code class="sig-name descname">delete_sheet</code><span class="sig-paren">(</span><em class="sig-param">sheet</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/iox/google.html#GoogleSheet.delete_sheet"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#iox.GoogleSheet.delete_sheet" title="Permalink to this definition">¶</a></dt>
+<dd><p>Delete sheet by name from Google spreadsheet.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>sheet</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.8)"><em>str</em></a>) – Name of Google sheet.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="iox.GoogleSheet.delete_sheet_id">
+<code class="sig-name descname">delete_sheet_id</code><span class="sig-paren">(</span><em class="sig-param">sheet_id</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/iox/google.html#GoogleSheet.delete_sheet_id"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#iox.GoogleSheet.delete_sheet_id" title="Permalink to this definition">¶</a></dt>
+<dd><p>Delete sheet by ID from Google spreadsheet.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>sheet_id</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.8)"><em>int</em></a>) – ID of Google sheet, i.e., <a class="reference external" href="https://docs.google.com/spreadsheets/d/[spreadsheet_id]/edit#gid=[sheet_id">https://docs.google.com/spreadsheets/d/[spreadsheet_id]/edit#gid=[sheet_id</a>]</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
 <dt id="iox.GoogleSheet.write">
-<code class="sig-name descname">write</code><span class="sig-paren">(</span><em class="sig-param">cell</em>, <em class="sig-param">values</em>, <em class="sig-param">index=False</em>, <em class="sig-param">header=True</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/iox/google.html#GoogleSheet.write"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#iox.GoogleSheet.write" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">write</code><span class="sig-paren">(</span><em class="sig-param">cell</em>, <em class="sig-param">values</em>, <em class="sig-param">index=False</em>, <em class="sig-param">header=True</em>, <em class="sig-param">formula=False</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/iox/google.html#GoogleSheet.write"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#iox.GoogleSheet.write" title="Permalink to this definition">¶</a></dt>
 <dd><dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>cell</strong> – </p></li>
+<li><p><strong>cell</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.8)"><em>str</em></a>) – </p></li>
 <li><p><strong>values</strong> (<em>pd.DataFrame</em><em> or </em><em>array-like</em><em> or </em><em>singular</em>) – </p></li>
 <li><p><strong>index</strong> – </p></li>
 <li><p><strong>header</strong> – </p></li>
+<li><p><strong>formula</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.8)"><em>bool</em></a>) – </p></li>
 </ul>
 </dd>
 </dl>
@@ -117,7 +140,7 @@
         <li class="right" >
           <a href="iox.BigQuery.html" title="iox.BigQuery"
              >previous</a> |</li>
-        <li class="nav-item nav-item-0"><a href="../../index.html">iox 0.0.18 documentation</a> &#187;</li>
+        <li class="nav-item nav-item-0"><a href="../../index.html">iox 0.0.19 documentation</a> &#187;</li>
           <li class="nav-item nav-item-1"><a href="../../api.html" >API Reference</a> &#187;</li>
           <li class="nav-item nav-item-2"><a href="../google.html" >iox.google</a> &#187;</li> 
       </ul>
