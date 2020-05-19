@@ -4,6 +4,8 @@ written in Python3
 author: C. Lockhart <chris@lockhartlab.org>
 """
 
+from iox._config import google as config
+
 from hashlib import md5
 from glovebox import GloveBox
 from googleapiclient.discovery import build
@@ -29,7 +31,8 @@ class BigQuery:
     client = privatize(dtype=(None, bigquery.Client))
 
     # Initialize the instance
-    def __init__(self, project_id, credentials='credentials.json'):
+    # TODO add ability to authenticate via API key
+    def __init__(self, project_id, credentials=None):
         """
         Initialize instance of BigQuery class
 
@@ -208,7 +211,7 @@ class GoogleSheet:
     """
 
     # Initialize the class instance
-    def __init__(self, spreadsheet_id, credentials='credentials.json'):
+    def __init__(self, spreadsheet_id, credentials=None):
         self.spreadsheet_id = spreadsheet_id
         self.credentials = credentials
         self.spreadsheet = None
@@ -415,7 +418,7 @@ class GoogleSheet:
 
 
 # Authenticate:
-def authenticate(endpoint, credentials='credentials.json'):
+def authenticate(endpoint, credentials=None):
     """
     Authenticate Google
 
@@ -423,7 +426,7 @@ def authenticate(endpoint, credentials='credentials.json'):
     ----------
     endpoint : str
         Google scope to authenticate
-    credentials : str
+    credentials : None or str
         Google credentials
 
     Returns
@@ -431,6 +434,12 @@ def authenticate(endpoint, credentials='credentials.json'):
     google.oauth2.credentials.Credentials
         Authenticated credentials
     """
+
+    # Get credentials from configuration. Otherwise, assume in current directory.
+    if credentials is None and 'credentials' in config:
+        credentials = config['credentials']
+    else:
+        credentials = 'credentials.json'
 
     # Type check
     if not isinstance(endpoint, str):
@@ -442,9 +451,8 @@ def authenticate(endpoint, credentials='credentials.json'):
     if not os.path.isfile(credentials):
         raise AttributeError("""
             %s does not exist
-            you can create it at any of:
-                https://cloud.google.com/bigquery/docs/quickstarts/quickstart-client-libraries
-                https://developers.google.com/sheets/api/quickstart/python
+            you can create it at 
+            https://cloud.google.com/bigquery/docs/quickstarts/quickstart-client-libraries
         """ % credentials)
 
     # Name our authentication token and place it in tempdir
@@ -481,3 +489,8 @@ def authenticate(endpoint, credentials='credentials.json'):
 # Clean stored credentials
 def clean_stored_credentials():
     GloveBox('iox-google').delete()
+
+
+# TODO create credentials
+def create_credentials():
+    pass

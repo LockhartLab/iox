@@ -1,4 +1,5 @@
 
+from ._config import *
 from .google import *
 from .version import __version__
 

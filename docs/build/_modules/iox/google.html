@@ -4,7 +4,7 @@
 <html xmlns="http://www.w3.org/1999/xhtml">
   <head>
     <meta charset="utf-8" />
-    <title>iox.google &#8212; iox 0.0.19 documentation</title>
+    <title>iox.google &#8212; iox 0.0.20 documentation</title>
     <link rel="stylesheet" href="../../_static/nature.css" type="text/css" />
     <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
     <script type="text/javascript" id="documentation_options" data-url_root="../../" src="../../_static/documentation_options.js"></script>
@@ -21,7 +21,7 @@
         <li class="right" style="margin-right: 10px">
           <a href="../../genindex.html" title="General Index"
              accesskey="I">index</a></li>
-        <li class="nav-item nav-item-0"><a href="../../index.html">iox 0.0.19 documentation</a> &#187;</li>
+        <li class="nav-item nav-item-0"><a href="../../index.html">iox 0.0.20 documentation</a> &#187;</li>
           <li class="nav-item nav-item-1"><a href="../index.html" accesskey="U">Module code</a> &#187;</li> 
       </ul>
     </div>  
@@ -37,6 +37,8 @@
 <span class="sd">written in Python3</span>
 <span class="sd">author: C. Lockhart &lt;chris@lockhartlab.org&gt;</span>
 <span class="sd">&quot;&quot;&quot;</span>
+
+<span class="kn">from</span> <span class="nn">iox._config</span> <span class="kn">import</span> <span class="n">google</span> <span class="k">as</span> <span class="n">config</span>
 
 <span class="kn">from</span> <span class="nn">hashlib</span> <span class="kn">import</span> <span class="n">md5</span>
 <span class="kn">from</span> <span class="nn">glovebox</span> <span class="kn">import</span> <span class="n">GloveBox</span>
@@ -63,7 +65,8 @@
     <span class="n">client</span> <span class="o">=</span> <span class="n">privatize</span><span class="p">(</span><span class="n">dtype</span><span class="o">=</span><span class="p">(</span><span class="kc">None</span><span class="p">,</span> <span class="n">bigquery</span><span class="o">.</span><span class="n">Client</span><span class="p">))</span>
 
     <span class="c1"># Initialize the instance</span>
-<div class="viewcode-block" id="BigQuery.__init__"><a class="viewcode-back" href="../../api/generated/iox.BigQuery.html#iox.BigQuery.__init__">[docs]</a>    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">project_id</span><span class="p">,</span> <span class="n">credentials</span><span class="o">=</span><span class="s1">&#39;credentials.json&#39;</span><span class="p">):</span>
+    <span class="c1"># TODO add ability to authenticate via API key</span>
+<div class="viewcode-block" id="BigQuery.__init__"><a class="viewcode-back" href="../../api/generated/iox.BigQuery.html#iox.BigQuery.__init__">[docs]</a>    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">project_id</span><span class="p">,</span> <span class="n">credentials</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Initialize instance of BigQuery class</span>
 
@@ -242,7 +245,7 @@
 <span class="sd">    &quot;&quot;&quot;</span>
 
     <span class="c1"># Initialize the class instance</span>
-<div class="viewcode-block" id="GoogleSheet.__init__"><a class="viewcode-back" href="../../api/generated/iox.GoogleSheet.html#iox.GoogleSheet.__init__">[docs]</a>    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">spreadsheet_id</span><span class="p">,</span> <span class="n">credentials</span><span class="o">=</span><span class="s1">&#39;credentials.json&#39;</span><span class="p">):</span>
+<div class="viewcode-block" id="GoogleSheet.__init__"><a class="viewcode-back" href="../../api/generated/iox.GoogleSheet.html#iox.GoogleSheet.__init__">[docs]</a>    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">spreadsheet_id</span><span class="p">,</span> <span class="n">credentials</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">spreadsheet_id</span> <span class="o">=</span> <span class="n">spreadsheet_id</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">credentials</span> <span class="o">=</span> <span class="n">credentials</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">spreadsheet</span> <span class="o">=</span> <span class="kc">None</span></div>
@@ -449,7 +452,7 @@
 
 
 <span class="c1"># Authenticate:</span>
-<div class="viewcode-block" id="authenticate"><a class="viewcode-back" href="../../api/generated/iox.authenticate.html#iox.authenticate">[docs]</a><span class="k">def</span> <span class="nf">authenticate</span><span class="p">(</span><span class="n">endpoint</span><span class="p">,</span> <span class="n">credentials</span><span class="o">=</span><span class="s1">&#39;credentials.json&#39;</span><span class="p">):</span>
+<div class="viewcode-block" id="authenticate"><a class="viewcode-back" href="../../api/generated/iox.authenticate.html#iox.authenticate">[docs]</a><span class="k">def</span> <span class="nf">authenticate</span><span class="p">(</span><span class="n">endpoint</span><span class="p">,</span> <span class="n">credentials</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Authenticate Google</span>
 
@@ -457,7 +460,7 @@
 <span class="sd">    ----------</span>
 <span class="sd">    endpoint : str</span>
 <span class="sd">        Google scope to authenticate</span>
-<span class="sd">    credentials : str</span>
+<span class="sd">    credentials : None or str</span>
 <span class="sd">        Google credentials</span>
 
 <span class="sd">    Returns</span>
@@ -465,6 +468,12 @@
 <span class="sd">    google.oauth2.credentials.Credentials</span>
 <span class="sd">        Authenticated credentials</span>
 <span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="c1"># Get credentials from configuration. Otherwise, assume in current directory.</span>
+    <span class="k">if</span> <span class="n">credentials</span> <span class="ow">is</span> <span class="kc">None</span> <span class="ow">and</span> <span class="s1">&#39;credentials&#39;</span> <span class="ow">in</span> <span class="n">config</span><span class="p">:</span>
+        <span class="n">credentials</span> <span class="o">=</span> <span class="n">config</span><span class="p">[</span><span class="s1">&#39;credentials&#39;</span><span class="p">]</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">credentials</span> <span class="o">=</span> <span class="s1">&#39;credentials.json&#39;</span>
 
     <span class="c1"># Type check</span>
     <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">endpoint</span><span class="p">,</span> <span class="nb">str</span><span class="p">):</span>
@@ -476,9 +485,8 @@
     <span class="k">if</span> <span class="ow">not</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">isfile</span><span class="p">(</span><span class="n">credentials</span><span class="p">):</span>
         <span class="k">raise</span> <span class="ne">AttributeError</span><span class="p">(</span><span class="s2">&quot;&quot;&quot;</span>
 <span class="s2">            </span><span class="si">%s</span><span class="s2"> does not exist</span>
-<span class="s2">            you can create it at any of:</span>
-<span class="s2">                https://cloud.google.com/bigquery/docs/quickstarts/quickstart-client-libraries</span>
-<span class="s2">                https://developers.google.com/sheets/api/quickstart/python</span>
+<span class="s2">            you can create it at </span>
+<span class="s2">            https://cloud.google.com/bigquery/docs/quickstarts/quickstart-client-libraries</span>
 <span class="s2">        &quot;&quot;&quot;</span> <span class="o">%</span> <span class="n">credentials</span><span class="p">)</span>
 
     <span class="c1"># Name our authentication token and place it in tempdir</span>
@@ -515,6 +523,11 @@
 <span class="c1"># Clean stored credentials</span>
 <span class="k">def</span> <span class="nf">clean_stored_credentials</span><span class="p">():</span>
     <span class="n">GloveBox</span><span class="p">(</span><span class="s1">&#39;iox-google&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">delete</span><span class="p">()</span>
+
+
+<span class="c1"># TODO create credentials</span>
+<span class="k">def</span> <span class="nf">create_credentials</span><span class="p">():</span>
+    <span class="k">pass</span>
 </pre></div>
 
           </div>
@@ -542,7 +555,7 @@
         <li class="right" style="margin-right: 10px">
           <a href="../../genindex.html" title="General Index"
              >index</a></li>
-        <li class="nav-item nav-item-0"><a href="../../index.html">iox 0.0.19 documentation</a> &#187;</li>
+        <li class="nav-item nav-item-0"><a href="../../index.html">iox 0.0.20 documentation</a> &#187;</li>
           <li class="nav-item nav-item-1"><a href="../index.html" >Module code</a> &#187;</li> 
       </ul>
     </div>
