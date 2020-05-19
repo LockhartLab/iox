@@ -32,7 +32,7 @@ class BigQuery:
 
     # Initialize the instance
     # TODO add ability to authenticate via API key
-    def __init__(self, project_id, credentials=None):
+    def __init__(self, project_id=None, credentials=None):
         """
         Initialize instance of BigQuery class
 
@@ -43,6 +43,12 @@ class BigQuery:
         credentials : str
             Path to Google credentials
         """
+
+        # Project ID
+        if project_id is None and 'project-id' in config:
+            project_id = config['project-id']
+        else:
+            raise AttributeError('must supply project ID')
 
         # Save information
         self.project_id = project_id
