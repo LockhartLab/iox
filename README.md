@@ -1,6 +1,6 @@
 
-iox
-===
+<img src="iox.svg" alt="iox" height="100px">
+
 a package for IO connections
 
 <span style="white-space: nowrap;">
