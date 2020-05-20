@@ -46,7 +46,7 @@ class BigQuery:
 
         # Get project ID from config if not specified
         if project_id is None:
-            project_id = config['project-id']
+            project_id = config['project_id']
             if project_id is None:
                 raise AttributeError('must specify a project ID')
 

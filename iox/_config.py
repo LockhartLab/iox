@@ -19,7 +19,7 @@ if os.path.exists(config_file):
     this.google['credentials'] = parser.get('google', 'credentials', fallback='credentials.json')
 
     # Get project ID
-    this.google['project_id'] = parser.get('google', 'project-id', fallback=None)
+    this.google['project_id'] = parser.get('google', 'project_id', fallback=None)
 
 
 
