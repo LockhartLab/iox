@@ -44,11 +44,11 @@ class BigQuery:
             Path to Google credentials
         """
 
-        # Project ID
+        # Get project ID from config if not specified
         if project_id is None:
             project_id = config['project-id']
-        else:
-            raise AttributeError('must supply project ID')
+            if project_id is None:
+                raise AttributeError('must specify a project ID')
 
         # Save information
         self.project_id = project_id
