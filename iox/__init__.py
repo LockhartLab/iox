@@ -1,11 +1,13 @@
 
 from ._config import *
+from .core import *
 from .google import *
-from .version import __version__
+from ._version import __version__
 
 __all__ = [
     'authenticate',
     'BigQuery',
     'GoogleSheet',
+    'query',
     '__version__'
 ]
