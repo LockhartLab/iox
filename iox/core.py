@@ -4,12 +4,13 @@ written in Python3
 author: C. Lockhart <chris@lockhartlab.org>
 """
 
+from .google import *
+
 from iox._config import defaults as config
-import iox
 
 database = None
-if config['database'] == 'bigquery':
-    database = iox.BigQuery()
+if 'database' in config and config['database'] == 'bigquery':
+    database = BigQuery()
 
 
 def query(sql):

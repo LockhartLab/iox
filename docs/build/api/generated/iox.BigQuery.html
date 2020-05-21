@@ -4,7 +4,7 @@
 <html xmlns="http://www.w3.org/1999/xhtml">
   <head>
     <meta charset="utf-8" />
-    <title>iox.BigQuery &#8212; iox 0.0.28 documentation</title>
+    <title>iox.BigQuery &#8212; iox 0.0.29 documentation</title>
     <link rel="stylesheet" href="../../_static/nature.css" type="text/css" />
     <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
     <script type="text/javascript" id="documentation_options" data-url_root="../../" src="../../_static/documentation_options.js"></script>
@@ -13,7 +13,9 @@
     <script type="text/javascript" src="../../_static/doctools.js"></script>
     <script type="text/javascript" src="../../_static/language_data.js"></script>
     <link rel="index" title="Index" href="../../genindex.html" />
-    <link rel="search" title="Search" href="../../search.html" /> 
+    <link rel="search" title="Search" href="../../search.html" />
+    <link rel="next" title="iox.GoogleSheet" href="iox.GoogleSheet.html" />
+    <link rel="prev" title="iox.google" href="../google.html" /> 
   </head><body>
     <div class="related" role="navigation" aria-label="related navigation">
       <h3>Navigation</h3>
@@ -21,7 +23,15 @@
         <li class="right" style="margin-right: 10px">
           <a href="../../genindex.html" title="General Index"
              accesskey="I">index</a></li>
-        <li class="nav-item nav-item-0"><a href="../../index.html">iox 0.0.28 documentation</a> &#187;</li> 
+        <li class="right" >
+          <a href="iox.GoogleSheet.html" title="iox.GoogleSheet"
+             accesskey="N">next</a> |</li>
+        <li class="right" >
+          <a href="../google.html" title="iox.google"
+             accesskey="P">previous</a> |</li>
+        <li class="nav-item nav-item-0"><a href="../../index.html">iox 0.0.29 documentation</a> &#187;</li>
+          <li class="nav-item nav-item-1"><a href="../../api.html" >API Reference</a> &#187;</li>
+          <li class="nav-item nav-item-2"><a href="../google.html" accesskey="U">iox.google</a> &#187;</li> 
       </ul>
     </div>  
 
@@ -32,6 +42,110 @@
             
   <div class="section" id="iox-bigquery">
 <h1>iox.BigQuery<a class="headerlink" href="#iox-bigquery" title="Permalink to this headline">¶</a></h1>
+<dl class="class">
+<dt id="iox.BigQuery">
+<em class="property">class </em><code class="sig-prename descclassname">iox.</code><code class="sig-name descname">BigQuery</code><span class="sig-paren">(</span><em class="sig-param">project_id=None</em>, <em class="sig-param">credentials=None</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/iox/google.html#BigQuery"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#iox.BigQuery" title="Permalink to this definition">¶</a></dt>
+<dd><p>Connect to BigQuery</p>
+<p class="rubric">Methods:</p>
+<dl class="method">
+<dt id="iox.BigQuery.__init__">
+<code class="sig-name descname">__init__</code><span class="sig-paren">(</span><em class="sig-param">project_id=None</em>, <em class="sig-param">credentials=None</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/iox/google.html#BigQuery.__init__"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#iox.BigQuery.__init__" title="Permalink to this definition">¶</a></dt>
+<dd><p>Initialize instance of BigQuery class</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>project_id</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.8)"><em>str</em></a>) – Google project ID</p></li>
+<li><p><strong>credentials</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.8)"><em>str</em></a>) – Path to Google credentials</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="iox.BigQuery.connect">
+<code class="sig-name descname">connect</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/iox/google.html#BigQuery.connect"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#iox.BigQuery.connect" title="Permalink to this definition">¶</a></dt>
+<dd><p>Start the client connection with BigQuery using <a class="reference internal" href="iox.authenticate.html#iox.authenticate" title="iox.authenticate"><code class="xref py py-func docutils literal notranslate"><span class="pre">authenticate()</span></code></a></p>
+</dd></dl>
+
+<dl class="method">
+<dt id="iox.BigQuery.delete_table">
+<code class="sig-name descname">delete_table</code><span class="sig-paren">(</span><em class="sig-param">table</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/iox/google.html#BigQuery.delete_table"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#iox.BigQuery.delete_table" title="Permalink to this definition">¶</a></dt>
+<dd><p>Delete table in BigQuery</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>table</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.8)"><em>str</em></a>) – Name of table to be deleted</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="iox.BigQuery.fquery">
+<code class="sig-name descname">fquery</code><span class="sig-paren">(</span><em class="sig-param">filename</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/iox/google.html#BigQuery.fquery"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#iox.BigQuery.fquery" title="Permalink to this definition">¶</a></dt>
+<dd><p>Query database with a file.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>filename</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.8)"><em>str</em></a>) – Path to file that contains a SQL query.</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>The results from the query</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p><a class="reference external" href="https://pandas.pydata.org/pandas-docs/stable/reference/api/pandas.DataFrame.html#pandas.DataFrame" title="(in pandas v1.0.3)">pandas.DataFrame</a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="iox.BigQuery.get_view">
+<code class="sig-name descname">get_view</code><span class="sig-paren">(</span><em class="sig-param">view</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/iox/google.html#BigQuery.get_view"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#iox.BigQuery.get_view" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get the query in BigQuery view</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>view</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.8)"><em>str</em></a>) – Reference to view</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>View query</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.8)">str</a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="iox.BigQuery.query">
+<code class="sig-name descname">query</code><span class="sig-paren">(</span><em class="sig-param">sql</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/iox/google.html#BigQuery.query"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#iox.BigQuery.query" title="Permalink to this definition">¶</a></dt>
+<dd><p>Query database with a string.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>sql</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.8)"><em>str</em></a>) – SQL statements to be run.</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>The results from the query</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p><a class="reference external" href="https://pandas.pydata.org/pandas-docs/stable/reference/api/pandas.DataFrame.html#pandas.DataFrame" title="(in pandas v1.0.3)">pandas.DataFrame</a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="iox.BigQuery.to_csv">
+<code class="sig-name descname">to_csv</code><span class="sig-paren">(</span><em class="sig-param">sql</em>, <em class="sig-param">filename</em>, <em class="sig-param">index=True</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/iox/google.html#BigQuery.to_csv"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#iox.BigQuery.to_csv" title="Permalink to this definition">¶</a></dt>
+<dd><p>Query the database and then write to CSV</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>sql</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.8)"><em>str</em></a>) – SQL statements to be run.</p></li>
+<li><p><strong>filename</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.8)"><em>str</em></a>) – Name of CSV.</p></li>
+<li><p><strong>index</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.8)"><em>bool</em></a>) – Should index be written? (Default: True)</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
 </div>
 
 
@@ -40,6 +154,12 @@
       </div>
       <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
         <div class="sphinxsidebarwrapper">
+  <h4>Previous topic</h4>
+  <p class="topless"><a href="../google.html"
+                        title="previous chapter">iox.google</a></p>
+  <h4>Next topic</h4>
+  <p class="topless"><a href="iox.GoogleSheet.html"
+                        title="next chapter">iox.GoogleSheet</a></p>
   <div role="note" aria-label="source link">
     <h3>This Page</h3>
     <ul class="this-page-menu">
@@ -67,7 +187,15 @@
         <li class="right" style="margin-right: 10px">
           <a href="../../genindex.html" title="General Index"
              >index</a></li>
-        <li class="nav-item nav-item-0"><a href="../../index.html">iox 0.0.28 documentation</a> &#187;</li> 
+        <li class="right" >
+          <a href="iox.GoogleSheet.html" title="iox.GoogleSheet"
+             >next</a> |</li>
+        <li class="right" >
+          <a href="../google.html" title="iox.google"
+             >previous</a> |</li>
+        <li class="nav-item nav-item-0"><a href="../../index.html">iox 0.0.29 documentation</a> &#187;</li>
+          <li class="nav-item nav-item-1"><a href="../../api.html" >API Reference</a> &#187;</li>
+          <li class="nav-item nav-item-2"><a href="../google.html" >iox.google</a> &#187;</li> 
       </ul>
     </div>
     <div class="footer" role="contentinfo">
