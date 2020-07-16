@@ -367,6 +367,11 @@ class GoogleSheet:
 
     # Read
     def read(self, cell, header=False):
+        
+
+        # Check that we're connected
+        self._connection_check()
+
         # Read
         values = self._read(cell, formula=False)
 
