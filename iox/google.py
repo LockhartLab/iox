@@ -188,7 +188,7 @@ class BigQuery:
         _ = self.client.update_table(view, ["view_query"])
 
     # Query database with a string
-    def query(self, sql):
+    def query(self, sql, set_index=True):
         """
         Query database with a string.
 
@@ -196,6 +196,7 @@ class BigQuery:
         ----------
         sql : str
             SQL statements to be run.
+        set_index : bool
 
         Returns
         -------
@@ -207,7 +208,14 @@ class BigQuery:
         self._connection_check()
 
         # Run SQL
-        return self.client.query(sql).to_dataframe()
+        df = self.client.query(sql).to_dataframe()
+
+        # Set index?
+        if set_index:
+            df = df.set_index(df.columns[0])
+
+        # Return
+        return df
 
 
 # Class for reading & writing to Google Sheets
@@ -367,7 +375,21 @@ class GoogleSheet:
 
     # Read
     def read(self, cell, header=False):
-        
+        """
+        Read from Google sheets.
+
+        Parameters
+        ----------
+        cell : str
+            Location of cells to read in A4 format.
+        header : bool
+            Is there a header present in the range?
+
+        Returns
+        -------
+        pandas.DataFrame
+            Cells returned as a DataFrame.
+        """
 
         # Check that we're connected
         self._connection_check()

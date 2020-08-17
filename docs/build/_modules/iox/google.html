@@ -4,7 +4,7 @@
 <html xmlns="http://www.w3.org/1999/xhtml">
   <head>
     <meta charset="utf-8" />
-    <title>iox.google &#8212; iox 0.0.30 documentation</title>
+    <title>iox.google &#8212; iox 0.0.31 documentation</title>
     <link rel="stylesheet" href="../../_static/nature.css" type="text/css" />
     <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
     <script type="text/javascript" id="documentation_options" data-url_root="../../" src="../../_static/documentation_options.js"></script>
@@ -21,7 +21,7 @@
         <li class="right" style="margin-right: 10px">
           <a href="../../genindex.html" title="General Index"
              accesskey="I">index</a></li>
-        <li class="nav-item nav-item-0"><a href="../../index.html">iox 0.0.30 documentation</a> &#187;</li>
+        <li class="nav-item nav-item-0"><a href="../../index.html">iox 0.0.31 documentation</a> &#187;</li>
           <li class="nav-item nav-item-1"><a href="../index.html" accesskey="U">Module code</a> &#187;</li> 
       </ul>
     </div>  
@@ -222,7 +222,7 @@
         <span class="n">_</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">client</span><span class="o">.</span><span class="n">update_table</span><span class="p">(</span><span class="n">view</span><span class="p">,</span> <span class="p">[</span><span class="s2">&quot;view_query&quot;</span><span class="p">])</span>
 
     <span class="c1"># Query database with a string</span>
-<div class="viewcode-block" id="BigQuery.query"><a class="viewcode-back" href="../../api/generated/iox.BigQuery.html#iox.BigQuery.query">[docs]</a>    <span class="k">def</span> <span class="nf">query</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">sql</span><span class="p">):</span>
+<div class="viewcode-block" id="BigQuery.query"><a class="viewcode-back" href="../../api/generated/iox.BigQuery.html#iox.BigQuery.query">[docs]</a>    <span class="k">def</span> <span class="nf">query</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">sql</span><span class="p">,</span> <span class="n">set_index</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Query database with a string.</span>
 
@@ -230,6 +230,7 @@
 <span class="sd">        ----------</span>
 <span class="sd">        sql : str</span>
 <span class="sd">            SQL statements to be run.</span>
+<span class="sd">        set_index : bool</span>
 
 <span class="sd">        Returns</span>
 <span class="sd">        -------</span>
@@ -241,7 +242,14 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">_connection_check</span><span class="p">()</span>
 
         <span class="c1"># Run SQL</span>
-        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">client</span><span class="o">.</span><span class="n">query</span><span class="p">(</span><span class="n">sql</span><span class="p">)</span><span class="o">.</span><span class="n">to_dataframe</span><span class="p">()</span></div></div>
+        <span class="n">df</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">client</span><span class="o">.</span><span class="n">query</span><span class="p">(</span><span class="n">sql</span><span class="p">)</span><span class="o">.</span><span class="n">to_dataframe</span><span class="p">()</span>
+
+        <span class="c1"># Set index?</span>
+        <span class="k">if</span> <span class="n">set_index</span><span class="p">:</span>
+            <span class="n">df</span> <span class="o">=</span> <span class="n">df</span><span class="o">.</span><span class="n">set_index</span><span class="p">(</span><span class="n">df</span><span class="o">.</span><span class="n">columns</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
+
+        <span class="c1"># Return</span>
+        <span class="k">return</span> <span class="n">df</span></div></div>
 
 
 <span class="c1"># Class for reading &amp; writing to Google Sheets</span>
@@ -400,7 +408,23 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">_write</span><span class="p">(</span><span class="n">cell2</span><span class="p">,</span> <span class="n">values</span><span class="p">,</span> <span class="n">formula</span><span class="o">=</span><span class="n">formula</span><span class="p">)</span>
 
     <span class="c1"># Read</span>
-    <span class="k">def</span> <span class="nf">read</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">cell</span><span class="p">,</span> <span class="n">header</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+<div class="viewcode-block" id="GoogleSheet.read"><a class="viewcode-back" href="../../api/generated/iox.GoogleSheet.html#iox.GoogleSheet.read">[docs]</a>    <span class="k">def</span> <span class="nf">read</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">cell</span><span class="p">,</span> <span class="n">header</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Read from Google sheets.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        cell : str</span>
+<span class="sd">            Location of cells to read in A4 format.</span>
+<span class="sd">        header : bool</span>
+<span class="sd">            Is there a header present in the range?</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        pandas.DataFrame</span>
+<span class="sd">            Cells returned as a DataFrame.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
         <span class="c1"># Check that we&#39;re connected</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_connection_check</span><span class="p">()</span>
 
@@ -415,7 +439,7 @@
             <span class="n">df</span> <span class="o">=</span> <span class="n">df</span><span class="o">.</span><span class="n">rename</span><span class="p">(</span><span class="n">columns</span><span class="o">=</span><span class="n">df</span><span class="o">.</span><span class="n">iloc</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span><span class="o">.</span><span class="n">drop</span><span class="p">(</span><span class="n">df</span><span class="o">.</span><span class="n">index</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
 
         <span class="c1"># Return</span>
-        <span class="k">return</span> <span class="n">df</span>
+        <span class="k">return</span> <span class="n">df</span></div>
 
     <span class="c1"># Write</span>
 <div class="viewcode-block" id="GoogleSheet.write"><a class="viewcode-back" href="../../api/generated/iox.GoogleSheet.html#iox.GoogleSheet.write">[docs]</a>    <span class="k">def</span> <span class="nf">write</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">cell</span><span class="p">,</span> <span class="n">values</span><span class="p">,</span> <span class="n">index</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">header</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">formula</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
@@ -562,7 +586,7 @@
         <li class="right" style="margin-right: 10px">
           <a href="../../genindex.html" title="General Index"
              >index</a></li>
-        <li class="nav-item nav-item-0"><a href="../../index.html">iox 0.0.30 documentation</a> &#187;</li>
+        <li class="nav-item nav-item-0"><a href="../../index.html">iox 0.0.31 documentation</a> &#187;</li>
           <li class="nav-item nav-item-1"><a href="../index.html" >Module code</a> &#187;</li> 
       </ul>
     </div>
