@@ -40,7 +40,6 @@ setup(
         'google_auth_oauthlib',
         'numpy',
         'pandas',
-        'privatize>=0.0.9',
     ],
     include_package_data=True,
     zip_safe=True

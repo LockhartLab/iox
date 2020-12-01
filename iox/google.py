@@ -16,7 +16,6 @@ import numpy as np
 import os.path
 import pandas as pd
 import pickle
-from privatize import privatize
 
 
 # Allows data extract from BigQuery database
@@ -499,7 +498,7 @@ def authenticate(endpoint, credentials=None):
 
     # If there are no valid credentials, generate
     if not _credentials or not _credentials.valid:
-        # Simply fresh if possible
+        # Simply refresh if possible
         if _credentials and _credentials.expired and _credentials.refresh_token:
             _credentials.refresh(Request())
 

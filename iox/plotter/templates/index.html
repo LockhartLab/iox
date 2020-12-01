@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="en" xmlns="http://www.w3.org/1999/html">
+<head>
+    <meta charset="UTF-8">
+    <title>iox - plotter</title>
+    <!--suppress JSUnresolvedLibraryURL -->
+    <script type="text/javascript" src="https://code.jquery.com/jquery-1.11.0.min.js"></script>
+    <script type="text/javascript">
+        function submitForm() {
+            var formData = new FormData(document.querySelector('#plotter'));
+            // formData.append("sql", $("#sql").value);
+            $.ajax({
+                url: '/',
+                type: 'post',
+                processData: false,
+                contentType: false,
+                data: formData,
+                success: function(data) {
+                    $('#plot-holder').html(data.plot_html);
+                },
+            });
+        }
+
+        $(document).ready(function () {
+            $('.submit-button').on('click', function () {
+                submitForm();
+            });
+
+            $(document).on('keypress', function (e2) {
+                if (e2.ctrlKey && e2.which === 13) {
+                    submitForm();
+                    e2.preventDefault();
+                    return false;
+                }
+            });
+        });
+    </script>
+</head>
+<body>
+  <div style="width: 100%;">
+    <div style="display: inline-block;">
+      <form id="plotter" enctype="multipart/form-data">
+        <!--suppress HtmlFormInputWithoutLabel -->
+        <textarea id="sql" name="sql" rows="30" cols="80" style="padding: 25px"></textarea>
+        <br>
+        <input type="file" id="load" name="load" value="Load SQL" />
+        <input type="button" name="submit-button" id="submit-button" class="submit-button" value="Run" />
+      </form>
+    </div>
+    <div style="display: inline-block; vertical-align: top;">
+      <div id="plot-holder">
+      </div>
+    </div>
+  </div>
+</body>
+</html>
